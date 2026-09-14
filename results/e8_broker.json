@@ -1,0 +1,24 @@
+{
+  "broker": "apache/kafka 3.9.0 (KRaft)",
+  "constant_in_ir": 900000,
+  "is_default": true,
+  "matches_constant": true,
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:48:23Z"
+  },
+  "rejection_probe": {
+    "attempted": true,
+    "completed": false,
+    "reason": "the available Python client does not implement transactions, and the console producer never opens one, so it expires the batch rather than being refused on the timeout"
+  },
+  "related_settings": {
+    "transaction.remove.expired.transaction.cleanup.interval.ms": "3600000",
+    "transaction.state.log.min.isr": "1"
+  },
+  "status": "ok",
+  "synonyms": "DEFAULT_CONFIG:transaction.max.timeout.ms=900000",
+  "transaction_max_timeout_ms": 900000
+}

@@ -1,0 +1,9 @@
+# Capture-settlement job. Every value here is defensible on its own.
+execution.checkpointing.interval: 60 s
+execution.checkpointing.min-pause: 15 s
+execution.checkpointing.mode: EXACTLY_ONCE
+restart-strategy: fixed-delay
+restart-strategy.fixed-delay.attempts: 10
+restart-strategy.fixed-delay.delay: 30 s
+table.exec.state.ttl: 2 h
+sink.transactional-id-prefix: capture-settle

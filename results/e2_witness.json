@@ -1,0 +1,158 @@
+{
+  "config": {
+    "seeds": [
+      1,
+      2,
+      3
+    ]
+  },
+  "coverage": {
+    "coverage": 0.6504854368932039,
+    "duration_coverage": 0.7049180327868853,
+    "duration_findings": 305,
+    "duration_witnessed": 215,
+    "findings": 515,
+    "witnessed": 335
+  },
+  "needs_a_second_failure": [
+    "SC006",
+    "SC103"
+  ],
+  "per_rule": {
+    "SC001": {
+      "double_charge": 30,
+      "family": "structural",
+      "findings": 30,
+      "name": "effect outside the commit protocol",
+      "reproduced": 30,
+      "witnessed": 30
+    },
+    "SC002": {
+      "double_charge": 30,
+      "family": "structural",
+      "findings": 30,
+      "name": "non-deterministic idempotency key",
+      "reproduced": 30,
+      "witnessed": 30
+    },
+    "SC003": {
+      "double_charge": 30,
+      "family": "structural",
+      "findings": 30,
+      "name": "missing idempotency key",
+      "reproduced": 30,
+      "witnessed": 30
+    },
+    "SC004": {
+      "double_charge": 0,
+      "family": "structural",
+      "findings": 30,
+      "name": "uncommitted read of transactional output",
+      "reproduced": 0,
+      "witnessed": 0
+    },
+    "SC005": {
+      "double_charge": 0,
+      "family": "structural",
+      "findings": 30,
+      "name": "shared transactional id prefix",
+      "reproduced": 0,
+      "witnessed": 0
+    },
+    "SC006": {
+      "double_charge": 0,
+      "family": "structural",
+      "findings": 30,
+      "name": "effect upstream of deduplication",
+      "reproduced": 30,
+      "witnessed": 30
+    },
+    "SC007": {
+      "double_charge": 0,
+      "family": "structural",
+      "findings": 30,
+      "name": "non-idempotent sink under at-least-once",
+      "reproduced": 0,
+      "witnessed": 0
+    },
+    "SC100": {
+      "double_charge": 0,
+      "family": "duration",
+      "findings": 30,
+      "name": "undeclared provider key lifetime",
+      "reproduced": 0,
+      "witnessed": 0
+    },
+    "SC101": {
+      "double_charge": 60,
+      "family": "duration",
+      "findings": 60,
+      "name": "key lifetime below replay horizon",
+      "reproduced": 60,
+      "witnessed": 60
+    },
+    "SC102": {
+      "double_charge": 60,
+      "family": "duration",
+      "findings": 60,
+      "name": "dedup state TTL below replay horizon",
+      "reproduced": 60,
+      "witnessed": 60
+    },
+    "SC103": {
+      "double_charge": 0,
+      "family": "duration",
+      "findings": 60,
+      "name": "transaction timeout below downtime",
+      "reproduced": 60,
+      "witnessed": 60
+    },
+    "SC104": {
+      "double_charge": 0,
+      "family": "duration",
+      "findings": 30,
+      "name": "delivery timeout above transaction timeout",
+      "reproduced": 0,
+      "witnessed": 0
+    },
+    "SC105": {
+      "double_charge": 35,
+      "family": "duration",
+      "findings": 35,
+      "name": "client retry window above key lifetime",
+      "reproduced": 35,
+      "witnessed": 35
+    },
+    "SC106": {
+      "double_charge": 0,
+      "family": "duration",
+      "findings": 30,
+      "name": "required transaction timeout exceeds the broker cap",
+      "reproduced": 0,
+      "witnessed": 0
+    }
+  },
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:50:25Z"
+  },
+  "sufficient_alone": [
+    "SC001",
+    "SC002",
+    "SC003",
+    "SC101",
+    "SC102",
+    "SC105"
+  ],
+  "totals": {
+    "double_charge": 245,
+    "double_charge_rate": 0.7313432835820896,
+    "findings": 515,
+    "reproduced": 335,
+    "reproduction_rate": 1.0,
+    "witness_coverage": 0.6504854368932039,
+    "witnessed": 335
+  }
+}

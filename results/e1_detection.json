@@ -1,0 +1,326 @@
+{
+  "config": {
+    "per_combination": 2,
+    "seeds": [
+      1,
+      2,
+      3
+    ]
+  },
+  "corpus": {
+    "by_mutation": {
+      "SC001_non_idempotent_effect": 10,
+      "SC002_uuid_in_key": 10,
+      "SC003_missing_key": 10,
+      "SC004_uncommitted_read": 10,
+      "SC005_shared_txn_prefix": 10,
+      "SC006_effect_before_dedup": 10,
+      "SC007_sink_without_dedup": 10,
+      "SC100_undeclared_ttl": 10,
+      "SC101_key_ttl_below_replay": 10,
+      "SC102_state_ttl_below_replay": 10,
+      "SC103_txn_timeout_too_low": 10,
+      "SC104_delivery_above_txn": 10,
+      "SC105_retry_above_ttl": 10,
+      "SC106_downtime_exceeds_broker_cap": 10,
+      "clean": 10,
+      "decoy_fast_checkpoints": 10,
+      "decoy_long_retry_within_ttl": 10,
+      "edge_state_just_above": 10,
+      "edge_state_just_below": 10,
+      "edge_ttl_just_above": 10,
+      "edge_ttl_just_below": 10
+    },
+    "cases": 210,
+    "clean": 50,
+    "decoy": 20,
+    "defective": 160,
+    "edge": 40,
+    "mutations": 21,
+    "shapes": 5
+  },
+  "cost": {
+    "mean_us_per_pipeline": 3.8340114914472143,
+    "pipelines_analysed": 630,
+    "total_seconds": 0.002415427239611745
+  },
+  "per_mutation": {
+    "SC001_non_idempotent_effect": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC001": 30
+      }
+    },
+    "SC002_uuid_in_key": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC002": 30
+      }
+    },
+    "SC003_missing_key": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC003": 30
+      }
+    },
+    "SC004_uncommitted_read": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC004": 30
+      }
+    },
+    "SC005_shared_txn_prefix": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC005": 30
+      }
+    },
+    "SC006_effect_before_dedup": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC006": 30
+      }
+    },
+    "SC007_sink_without_dedup": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC007": 30
+      }
+    },
+    "SC100_undeclared_ttl": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC100": 30
+      }
+    },
+    "SC101_key_ttl_below_replay": {
+      "correct": 30,
+      "findings": 35,
+      "n": 30,
+      "rules": {
+        "SC101": 30,
+        "SC105": 5
+      }
+    },
+    "SC102_state_ttl_below_replay": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC102": 30
+      }
+    },
+    "SC103_txn_timeout_too_low": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC103": 30
+      }
+    },
+    "SC104_delivery_above_txn": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC104": 30
+      }
+    },
+    "SC105_retry_above_ttl": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC105": 30
+      }
+    },
+    "SC106_downtime_exceeds_broker_cap": {
+      "correct": 30,
+      "findings": 60,
+      "n": 30,
+      "rules": {
+        "SC103": 30,
+        "SC106": 30
+      }
+    },
+    "clean": {
+      "correct": 30,
+      "findings": 0,
+      "n": 30,
+      "rules": {}
+    },
+    "decoy_fast_checkpoints": {
+      "correct": 30,
+      "findings": 0,
+      "n": 30,
+      "rules": {}
+    },
+    "decoy_long_retry_within_ttl": {
+      "correct": 30,
+      "findings": 0,
+      "n": 30,
+      "rules": {}
+    },
+    "edge_state_just_above": {
+      "correct": 30,
+      "findings": 0,
+      "n": 30,
+      "rules": {}
+    },
+    "edge_state_just_below": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC102": 30
+      }
+    },
+    "edge_ttl_just_above": {
+      "correct": 30,
+      "findings": 0,
+      "n": 30,
+      "rules": {}
+    },
+    "edge_ttl_just_below": {
+      "correct": 30,
+      "findings": 30,
+      "n": 30,
+      "rules": {
+        "SC101": 30
+      }
+    }
+  },
+  "per_rule": {
+    "SC001": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "effect outside the commit protocol",
+      "recall": 1.0
+    },
+    "SC002": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "non-deterministic idempotency key",
+      "recall": 1.0
+    },
+    "SC003": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "missing idempotency key",
+      "recall": 1.0
+    },
+    "SC004": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "uncommitted read of transactional output",
+      "recall": 1.0
+    },
+    "SC005": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "shared transactional id prefix",
+      "recall": 1.0
+    },
+    "SC006": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "effect upstream of deduplication",
+      "recall": 1.0
+    },
+    "SC007": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "non-idempotent sink under at-least-once",
+      "recall": 1.0
+    },
+    "SC100": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "undeclared provider key lifetime",
+      "recall": 1.0
+    },
+    "SC101": {
+      "extra": 5,
+      "hit": 60,
+      "n": 60,
+      "name": "key lifetime below replay horizon",
+      "recall": 1.0
+    },
+    "SC102": {
+      "extra": 0,
+      "hit": 60,
+      "n": 60,
+      "name": "dedup state TTL below replay horizon",
+      "recall": 1.0
+    },
+    "SC103": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "transaction timeout below downtime",
+      "recall": 1.0
+    },
+    "SC104": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "delivery timeout above transaction timeout",
+      "recall": 1.0
+    },
+    "SC105": {
+      "extra": 0,
+      "hit": 30,
+      "n": 30,
+      "name": "client retry window above key lifetime",
+      "recall": 1.0
+    },
+    "SC106": {
+      "extra": 30,
+      "hit": 30,
+      "n": 30,
+      "name": "required transaction timeout exceeds the broker cap",
+      "recall": 1.0
+    }
+  },
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:50:25Z"
+  },
+  "totals": {
+    "cases": 630,
+    "false_negative": 0,
+    "false_positive": 0,
+    "false_positive_rate": 0.0,
+    "negatives": 150,
+    "positives": 480,
+    "recall": 1.0,
+    "true_negative": 150,
+    "true_positive": 480
+  }
+}

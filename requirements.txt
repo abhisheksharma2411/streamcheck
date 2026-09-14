@@ -1,0 +1,5 @@
+# Checker, corpus, witnesses and the interpreter: standard library only.
+# These are needed for the figures, the tests and the live execution arm.
+matplotlib>=3.8
+pytest>=8.0
+kafka-python-ng>=2.2

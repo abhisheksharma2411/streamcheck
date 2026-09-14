@@ -1,0 +1,503 @@
+{
+  "artifact_pairs": {
+    "broker config + cluster-inventory": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "broker config + effect code": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 155,
+      "share": 0.30097087378640774
+    },
+    "broker config + flink-conf.yaml": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "broker config + job SQL": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "broker config + kafka-consumer.properties": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "broker config + kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "broker config + runbook.md": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "cluster-inventory + effect code": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 155,
+      "share": 0.30097087378640774
+    },
+    "cluster-inventory + flink-conf.yaml": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "cluster-inventory + job SQL": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "cluster-inventory + kafka-consumer.properties": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "cluster-inventory + kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "cluster-inventory + runbook.md": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "effect code + flink-conf.yaml": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 155,
+      "share": 0.30097087378640774
+    },
+    "effect code + job SQL": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "effect code + kafka-consumer.properties": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "effect code + kafka-producer.properties": {
+      "duration_findings": 65,
+      "duration_share": 0.21311475409836064,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "effect code + runbook.md": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 155,
+      "share": 0.30097087378640774
+    },
+    "flink-conf.yaml + job SQL": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "flink-conf.yaml + kafka-consumer.properties": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "flink-conf.yaml + kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "flink-conf.yaml + runbook.md": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "job SQL + kafka-consumer.properties": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 60,
+      "share": 0.11650485436893204
+    },
+    "job SQL + kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 60,
+      "share": 0.11650485436893204
+    },
+    "job SQL + runbook.md": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "kafka-consumer.properties + kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 60,
+      "share": 0.11650485436893204
+    },
+    "kafka-consumer.properties + runbook.md": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "kafka-producer.properties + runbook.md": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    }
+  },
+  "artifact_triples": {
+    "broker config + effect code + job SQL": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "broker config + effect code + kafka-consumer.properties": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "broker config + effect code + kafka-producer.properties": {
+      "duration_findings": 65,
+      "duration_share": 0.21311475409836064,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "broker config + effect code + runbook.md": {
+      "duration_findings": 65,
+      "duration_share": 0.21311475409836064,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "cluster-inventory + effect code + flink-conf.yaml": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "cluster-inventory + effect code + job SQL": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 185,
+      "share": 0.3592233009708738
+    },
+    "effect code + flink-conf.yaml + runbook.md": {
+      "duration_findings": 125,
+      "duration_share": 0.4098360655737705,
+      "findings": 245,
+      "share": 0.47572815533980584
+    },
+    "effect code + job SQL + kafka-consumer.properties": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 215,
+      "share": 0.4174757281553398
+    },
+    "effect code + job SQL + kafka-producer.properties": {
+      "duration_findings": 65,
+      "duration_share": 0.21311475409836064,
+      "findings": 215,
+      "share": 0.4174757281553398
+    },
+    "effect code + kafka-consumer.properties + kafka-producer.properties": {
+      "duration_findings": 65,
+      "duration_share": 0.21311475409836064,
+      "findings": 215,
+      "share": 0.4174757281553398
+    }
+  },
+  "artifacts_needed_histogram": {
+    "1": 245,
+    "2": 60,
+    "3": 210
+  },
+  "config": {
+    "seeds": [
+      1,
+      2,
+      3
+    ]
+  },
+  "duration_artifacts_needed_histogram": {
+    "1": 65,
+    "2": 30,
+    "3": 210
+  },
+  "headline": {
+    "best_pair_findings": 185,
+    "best_pair_share": 0.3592233009708738,
+    "best_single_artifact_findings": 155,
+    "best_single_artifact_share": 0.30097087378640774,
+    "best_triple_findings": 245,
+    "best_triple_for_duration": {
+      "duration_findings": 125,
+      "duration_share": 0.4098360655737705,
+      "findings": 245,
+      "share": 0.47572815533980584
+    },
+    "best_triple_share": 0.47572815533980584,
+    "duration_findings_from_any_pair": 65,
+    "duration_findings_from_any_single": 35
+  },
+  "per_rule": {
+    "SC001": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "ChargeFunction.java"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "effect outside the commit protocol"
+    },
+    "SC002": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "ChargeFunction.java"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "non-deterministic idempotency key"
+    },
+    "SC003": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "ChargeFunction.java"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "missing idempotency key"
+    },
+    "SC004": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "kafka-consumer.properties"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "uncommitted read of transactional output"
+    },
+    "SC005": {
+      "artifact_counts": {
+        "2": 30
+      },
+      "example": [
+        "cluster-inventory",
+        "flink-conf.yaml"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "shared transactional id prefix"
+    },
+    "SC006": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "ChargeFunction.java"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "effect upstream of deduplication"
+    },
+    "SC007": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "CaptureJob.sql"
+      ],
+      "family": "structural",
+      "n": 30,
+      "name": "non-idempotent sink under at-least-once"
+    },
+    "SC100": {
+      "artifact_counts": {
+        "3": 30
+      },
+      "example": [
+        "ChargeFunction.java",
+        "flink-conf.yaml",
+        "runbook.md"
+      ],
+      "family": "duration",
+      "n": 30,
+      "name": "undeclared provider key lifetime"
+    },
+    "SC101": {
+      "artifact_counts": {
+        "3": 60
+      },
+      "example": [
+        "ChargeFunction.java",
+        "flink-conf.yaml",
+        "runbook.md"
+      ],
+      "family": "duration",
+      "n": 60,
+      "name": "key lifetime below replay horizon"
+    },
+    "SC102": {
+      "artifact_counts": {
+        "3": 60
+      },
+      "example": [
+        "CaptureJob.sql",
+        "flink-conf.yaml",
+        "runbook.md"
+      ],
+      "family": "duration",
+      "n": 60,
+      "name": "dedup state TTL below replay horizon"
+    },
+    "SC103": {
+      "artifact_counts": {
+        "3": 60
+      },
+      "example": [
+        "flink-conf.yaml",
+        "kafka-producer.properties",
+        "runbook.md"
+      ],
+      "family": "duration",
+      "n": 60,
+      "name": "transaction timeout below downtime"
+    },
+    "SC104": {
+      "artifact_counts": {
+        "1": 30
+      },
+      "example": [
+        "kafka-producer.properties"
+      ],
+      "family": "duration",
+      "n": 30,
+      "name": "delivery timeout above transaction timeout"
+    },
+    "SC105": {
+      "artifact_counts": {
+        "1": 35
+      },
+      "example": [
+        "ChargeFunction.java"
+      ],
+      "family": "duration",
+      "n": 35,
+      "name": "client retry window above key lifetime"
+    },
+    "SC106": {
+      "artifact_counts": {
+        "2": 30
+      },
+      "example": [
+        "broker config",
+        "runbook.md"
+      ],
+      "family": "duration",
+      "n": 30,
+      "name": "required transaction timeout exceeds the broker cap"
+    }
+  },
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:50:25Z"
+  },
+  "single_artifact": {
+    "broker config": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "cluster-inventory": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "effect code": {
+      "duration_findings": 35,
+      "duration_share": 0.11475409836065574,
+      "findings": 155,
+      "share": 0.30097087378640774
+    },
+    "flink-conf.yaml": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    },
+    "job SQL": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "kafka-consumer.properties": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "kafka-producer.properties": {
+      "duration_findings": 30,
+      "duration_share": 0.09836065573770492,
+      "findings": 30,
+      "share": 0.05825242718446602
+    },
+    "runbook.md": {
+      "duration_findings": 0,
+      "duration_share": 0.0,
+      "findings": 0,
+      "share": 0.0
+    }
+  },
+  "totals": {
+    "artifact_kinds": [
+      "broker config",
+      "cluster-inventory",
+      "effect code",
+      "flink-conf.yaml",
+      "job SQL",
+      "kafka-consumer.properties",
+      "kafka-producer.properties",
+      "runbook.md"
+    ],
+    "duration_findings": 305,
+    "findings": 515
+  }
+}

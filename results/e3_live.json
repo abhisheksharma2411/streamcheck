@@ -1,0 +1,1323 @@
+{
+  "config": {
+    "per_rule": 3,
+    "seed": 7
+  },
+  "infrastructure": "apache/kafka 3.9.0 (KRaft), SIGKILL restart, HTTP provider with key TTL",
+  "per_rule": {
+    "SC001": {
+      "attributable": 0,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC002": {
+      "attributable": 0,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC003": {
+      "attributable": 0,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC006": {
+      "attributable": 0,
+      "double_charge": 0,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC101": {
+      "attributable": 3,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC102": {
+      "attributable": 3,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC103": {
+      "attributable": 3,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    },
+    "SC105": {
+      "attributable": 3,
+      "double_charge": 3,
+      "errors": 0,
+      "n": 3,
+      "reproduced": 3
+    }
+  },
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:57:30Z"
+  },
+  "runs": [
+    {
+      "attributable": false,
+      "case_id": "dunning-SC001_non_idempotent_effect-0",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23254.553833976388,
+        "worker_log": [
+          "start pid=29485 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=29486 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23336.000374983996,
+        "worker_log": [
+          "start pid=28663 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=28664 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC001_non_idempotent_effect",
+      "rule": "SC001",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 2,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "dunning"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC001_non_idempotent_effect-1",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23346.940999967046,
+        "worker_log": [
+          "start pid=31160 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=31161 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23489.900000044145,
+        "worker_log": [
+          "start pid=30269 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=30340 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC001_non_idempotent_effect",
+      "rule": "SC001",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 2,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": false,
+      "case_id": "capture-SC001_non_idempotent_effect-1",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23244.3952918984,
+        "worker_log": [
+          "start pid=32812 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=32813 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC001",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23289.73729093559,
+        "worker_log": [
+          "start pid=31953 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=32024 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC001_non_idempotent_effect",
+      "rule": "SC001",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": false,
+      "case_id": "capture-SC002_uuid_in_key-1",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23433.95604204852,
+        "worker_log": [
+          "start pid=34508 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:34508:1:584708138 charged=True",
+          "start pid=34509 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:34509:1:584714269 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23372.505417093635,
+        "worker_log": [
+          "start pid=33639 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:33639:1:584684796 charged=True",
+          "start pid=33668 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:33668:1:584690798 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC002_uuid_in_key",
+      "rule": "SC002",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC002_uuid_in_key-0",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23397.49387500342,
+        "worker_log": [
+          "start pid=36124 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:36124:1:584754744 charged=True",
+          "start pid=36167 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:36167:1:584760864 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23236.659499933012,
+        "worker_log": [
+          "start pid=35307 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:35307:1:584731586 charged=True",
+          "start pid=35336 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:35336:1:584737502 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC002_uuid_in_key",
+      "rule": "SC002",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 2,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": false,
+      "case_id": "reconcile-SC002_uuid_in_key-0",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23387.77187501546,
+        "worker_log": [
+          "start pid=37786 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:37786:1:584801660 charged=True",
+          "start pid=37830 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:37830:1:584807681 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC002",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23409.714958048426,
+        "worker_log": [
+          "start pid=36958 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:36958:1:584778437 charged=True",
+          "start pid=36987 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:36987:1:584784260 charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC002_uuid_in_key",
+      "rule": "SC002",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 2,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC003_missing_key-1",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23243.626458919607,
+        "worker_log": [
+          "start pid=39430 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=39504 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23291.1789159989,
+        "worker_log": [
+          "start pid=38622 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=38623 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC003_missing_key",
+      "rule": "SC003",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": false,
+      "case_id": "reconcile-SC003_missing_key-1",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23228.186332969926,
+        "worker_log": [
+          "start pid=41189 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=41204 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23406.718541984446,
+        "worker_log": [
+          "start pid=40328 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=40329 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC003_missing_key",
+      "rule": "SC003",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC003_missing_key-0",
+      "control": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23374.940957990475,
+        "worker_log": [
+          "start pid=42862 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=42877 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC003",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23271.635957993567,
+        "worker_log": [
+          "start pid=42070 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "start pid=42071 restored=0 keys",
+          "effect ord-witness-1 key=<none> charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC003_missing_key",
+      "rule": "SC003",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": false,
+      "case_id": "reconcile-SC006_effect_before_dedup-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17186.26933300402,
+        "worker_log": [
+          "start pid=44333 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17305.59391702991,
+        "worker_log": [
+          "start pid=43701 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC006_effect_before_dedup",
+      "rule": "SC006",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 0,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC006_effect_before_dedup-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17387.03108392656,
+        "worker_log": [
+          "start pid=45562 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17456.74599998165,
+        "worker_log": [
+          "start pid=44924 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC006_effect_before_dedup",
+      "rule": "SC006",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 0,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": false,
+      "case_id": "refund-SC006_effect_before_dedup-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17225.175541942008,
+        "worker_log": [
+          "start pid=46812 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC006",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 17428.492874954827,
+        "worker_log": [
+          "start pid=46171 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC006_effect_before_dedup",
+      "rule": "SC006",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 0,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "refund"
+    },
+    {
+      "attributable": true,
+      "case_id": "payout-SC101_key_ttl_below_replay-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.0012631578947368421,
+        "wall_ms": 23198.008625069633,
+        "worker_log": [
+          "start pid=48273 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=48344 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.0012631578947368421,
+        "wall_ms": 23238.24695800431,
+        "worker_log": [
+          "start pid=47399 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=47471 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC101_key_ttl_below_replay",
+      "rule": "SC101",
+      "scale": 0.0012631578947368421,
+      "scaled_down_for_ms": 1276,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "payout"
+    },
+    {
+      "attributable": true,
+      "case_id": "capture-edge_ttl_just_below-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.0003146303093864709,
+        "wall_ms": 23249.916082946584,
+        "worker_log": [
+          "start pid=49889 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=49960 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.0003146303093864709,
+        "wall_ms": 23324.31083393749,
+        "worker_log": [
+          "start pid=49098 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=49176 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "edge_ttl_just_below",
+      "rule": "SC101",
+      "scale": 0.0003146303093864709,
+      "scaled_down_for_ms": 1200,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": true,
+      "case_id": "reconcile-edge_ttl_just_below-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.00031817579212514913,
+        "wall_ms": 23220.48974991776,
+        "worker_log": [
+          "start pid=51612 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=51684 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC101",
+        "scale": 0.00031817579212514913,
+        "wall_ms": 23490.427542012185,
+        "worker_log": [
+          "start pid=50794 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=50870 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "edge_ttl_just_below",
+      "rule": "SC101",
+      "scale": 0.00031817579212514913,
+      "scaled_down_for_ms": 1200,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": true,
+      "case_id": "payout-edge_state_just_below-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.0003277345350266284,
+        "wall_ms": 23322.73995806463,
+        "worker_log": [
+          "start pid=53251 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=53322 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.0003277345350266284,
+        "wall_ms": 23228.966291993856,
+        "worker_log": [
+          "start pid=52423 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=52495 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "edge_state_just_below",
+      "rule": "SC102",
+      "scale": 0.0003277345350266284,
+      "scaled_down_for_ms": 1200,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "payout"
+    },
+    {
+      "attributable": true,
+      "case_id": "capture-SC102_state_ttl_below_replay-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.0006552901023890785,
+        "wall_ms": 23236.514916992746,
+        "worker_log": [
+          "start pid=54960 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=55034 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.0006552901023890785,
+        "wall_ms": 23258.499582996592,
+        "worker_log": [
+          "start pid=54139 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=54215 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC102_state_ttl_below_replay",
+      "rule": "SC102",
+      "scale": 0.0006552901023890785,
+      "scaled_down_for_ms": 1220,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": true,
+      "case_id": "reconcile-SC102_state_ttl_below_replay-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.00117359413202934,
+        "wall_ms": 23224.120125058107,
+        "worker_log": [
+          "start pid=56743 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=56801 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC102",
+        "scale": 0.00117359413202934,
+        "wall_ms": 23258.64300003741,
+        "worker_log": [
+          "start pid=55767 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=55838 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC102_state_ttl_below_replay",
+      "rule": "SC102",
+      "scale": 0.00117359413202934,
+      "scaled_down_for_ms": 1341,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": true,
+      "case_id": "reconcile-SC103_txn_timeout_too_low-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23289.548874949105,
+        "worker_log": [
+          "start pid=58479 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=58480 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23221.433000057004,
+        "worker_log": [
+          "start pid=57638 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=57639 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC103_txn_timeout_too_low",
+      "rule": "SC103",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 60,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": true,
+      "case_id": "capture-SC103_txn_timeout_too_low-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23299.180667032488,
+        "worker_log": [
+          "start pid=60521 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=60522 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23284.15987500921,
+        "worker_log": [
+          "start pid=59622 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=59693 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC103_txn_timeout_too_low",
+      "rule": "SC103",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 36,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": true,
+      "case_id": "reconcile-SC103_txn_timeout_too_low-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23256.581665948033,
+        "worker_log": [
+          "start pid=62141 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=62198 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 1,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC103",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23228.108124923892,
+        "worker_log": [
+          "start pid=61301 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=61302 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 1,
+      "expect_invocations": 2,
+      "mutation": "SC103_txn_timeout_too_low",
+      "rule": "SC103",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 11,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    },
+    {
+      "attributable": true,
+      "case_id": "capture-SC105_retry_above_ttl-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23347.416083910502,
+        "worker_log": [
+          "start pid=63798 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=63885 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23327.49004091602,
+        "worker_log": [
+          "start pid=63006 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=63077 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC105_retry_above_ttl",
+      "rule": "SC105",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1203,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "capture"
+    },
+    {
+      "attributable": true,
+      "case_id": "dunning-SC105_retry_above_ttl-1",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23376.282374956645,
+        "worker_log": [
+          "start pid=65489 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=65554 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23412.356917047873,
+        "worker_log": [
+          "start pid=64682 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=64754 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC105_retry_above_ttl",
+      "rule": "SC105",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1202,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "dunning"
+    },
+    {
+      "attributable": true,
+      "case_id": "reconcile-SC105_retry_above_ttl-0",
+      "control": {
+        "charges": 1,
+        "charges_confirmed": false,
+        "confirmed": false,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23399.878791999072,
+        "worker_log": [
+          "start pid=67155 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=67227 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=False",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "defective": {
+        "charges": 2,
+        "charges_confirmed": true,
+        "confirmed": true,
+        "error": "",
+        "expected_charges": 2,
+        "expected_invocations": 2,
+        "invocations": 2,
+        "rule": "SC105",
+        "scale": 5.555555555555556e-05,
+        "wall_ms": 23309.057208010927,
+        "worker_log": [
+          "start pid=66362 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "start pid=66436 restored=0 keys",
+          "effect ord-witness-1 key=ord-witness-1:stable charged=True",
+          "checkpoint offsets+state (1 keys)",
+          "stop"
+        ]
+      },
+      "expect_charges": 2,
+      "expect_invocations": 2,
+      "mutation": "SC105_retry_above_ttl",
+      "rule": "SC105",
+      "scale": 5.555555555555556e-05,
+      "scaled_down_for_ms": 1203,
+      "scaled_key_ttl_ms": 1200,
+      "shape": "reconcile"
+    }
+  ],
+  "status": "ok",
+  "totals": {
+    "attributable": 12,
+    "double_charge": 21,
+    "errors": 0,
+    "reproduced": 24,
+    "runs": 24
+  }
+}

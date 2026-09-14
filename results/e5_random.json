@@ -1,0 +1,192 @@
+{
+  "ceiling_sweep": [
+    {
+      "cases": 110,
+      "cases_found": 17,
+      "cases_found_share": 0.15454545454545454,
+      "ceiling_hours": 0.08333333333333333,
+      "ceiling_ms": 300000,
+      "hit_rate": 0.029272727272727273
+    },
+    {
+      "cases": 110,
+      "cases_found": 65,
+      "cases_found_share": 0.5909090909090909,
+      "ceiling_hours": 0.5,
+      "ceiling_ms": 1800000,
+      "hit_rate": 0.17763636363636365
+    },
+    {
+      "cases": 110,
+      "cases_found": 65,
+      "cases_found_share": 0.5909090909090909,
+      "ceiling_hours": 2.0,
+      "ceiling_ms": 7200000,
+      "hit_rate": 0.2649090909090909
+    },
+    {
+      "cases": 110,
+      "cases_found": 78,
+      "cases_found_share": 0.7090909090909091,
+      "ceiling_hours": 4.0,
+      "ceiling_ms": 14400000,
+      "hit_rate": 0.29545454545454547
+    },
+    {
+      "cases": 110,
+      "cases_found": 110,
+      "cases_found_share": 1.0,
+      "ceiling_hours": 12.0,
+      "ceiling_ms": 43200000,
+      "hit_rate": 0.38581818181818184
+    },
+    {
+      "cases": 110,
+      "cases_found": 110,
+      "cases_found_share": 1.0,
+      "ceiling_hours": 48.0,
+      "ceiling_ms": 172800000,
+      "hit_rate": 0.4621818181818182
+    }
+  ],
+  "config": {
+    "downtime_distribution": "log-uniform",
+    "downtime_ms": [
+      10000,
+      14400000
+    ],
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "trials_per_case": 200
+  },
+  "cost_comparison": {
+    "analysis_us_per_pipeline": 3.8340114914472143,
+    "one_trial_ms": 25000.0,
+    "rules": {
+      "SC001": {
+        "expected_seconds": 25.0,
+        "expected_trials": 1.0
+      },
+      "SC002": {
+        "expected_seconds": 25.0,
+        "expected_trials": 1.0
+      },
+      "SC003": {
+        "expected_seconds": 25.0,
+        "expected_trials": 1.0
+      },
+      "SC006": {
+        "expected_seconds": null,
+        "expected_trials": null
+      },
+      "SC101": {
+        "expected_seconds": 51.26452494873546,
+        "expected_trials": 2.0505809979494187
+      },
+      "SC102": {
+        "expected_seconds": 52.53940455341506,
+        "expected_trials": 2.1015761821366024
+      },
+      "SC103": {
+        "expected_seconds": 1282.051282051282,
+        "expected_trials": 51.282051282051285
+      },
+      "SC105": {
+        "expected_seconds": 166.3893510815308,
+        "expected_trials": 6.655574043261232
+      }
+    },
+    "trial_cost_source": "estimate; E3 had not run"
+  },
+  "per_rule": {
+    "SC001": {
+      "cases": 15,
+      "cases_ever_found": 15,
+      "cases_never_found_rate": 0.0,
+      "expected_trials_to_find": 1.0,
+      "family": "structural",
+      "hit_rate": 1.0,
+      "hits": 3000,
+      "trials": 3000
+    },
+    "SC002": {
+      "cases": 15,
+      "cases_ever_found": 15,
+      "cases_never_found_rate": 0.0,
+      "expected_trials_to_find": 1.0,
+      "family": "structural",
+      "hit_rate": 1.0,
+      "hits": 3000,
+      "trials": 3000
+    },
+    "SC003": {
+      "cases": 15,
+      "cases_ever_found": 15,
+      "cases_never_found_rate": 0.0,
+      "expected_trials_to_find": 1.0,
+      "family": "structural",
+      "hit_rate": 1.0,
+      "hits": 3000,
+      "trials": 3000
+    },
+    "SC006": {
+      "cases": 15,
+      "cases_ever_found": 0,
+      "cases_never_found_rate": 1.0,
+      "expected_trials_to_find": null,
+      "family": "structural",
+      "hit_rate": 0.0,
+      "hits": 0,
+      "trials": 3000
+    },
+    "SC101": {
+      "cases": 30,
+      "cases_ever_found": 30,
+      "cases_never_found_rate": 0.0,
+      "expected_trials_to_find": 2.0505809979494187,
+      "family": "duration",
+      "hit_rate": 0.4876666666666667,
+      "hits": 2926,
+      "trials": 6000
+    },
+    "SC102": {
+      "cases": 30,
+      "cases_ever_found": 30,
+      "cases_never_found_rate": 0.0,
+      "expected_trials_to_find": 2.1015761821366024,
+      "family": "duration",
+      "hit_rate": 0.47583333333333333,
+      "hits": 2855,
+      "trials": 6000
+    },
+    "SC103": {
+      "cases": 30,
+      "cases_ever_found": 15,
+      "cases_never_found_rate": 0.5,
+      "expected_trials_to_find": 51.282051282051285,
+      "family": "duration",
+      "hit_rate": 0.0195,
+      "hits": 117,
+      "trials": 6000
+    },
+    "SC105": {
+      "cases": 20,
+      "cases_ever_found": 5,
+      "cases_never_found_rate": 0.75,
+      "expected_trials_to_find": 6.655574043261232,
+      "family": "duration",
+      "hit_rate": 0.15025,
+      "hits": 601,
+      "trials": 4000
+    }
+  },
+  "provenance": {
+    "git": "unversioned",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-14T20:50:25Z"
+  }
+}

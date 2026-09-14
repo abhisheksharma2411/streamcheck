@@ -1,0 +1,13 @@
+{
+  "effects": [
+    {
+      "name": "capture_charge",
+      "operator": "call_provider",
+      "idempotency_key": "order_id || ':capture'",
+      "provider_key_ttl": "24 h",
+      "client_retry_window": "5 min",
+      "idempotent": true,
+      "source": "provider API reference, 'Idempotent requests' section"
+    }
+  ]
+}

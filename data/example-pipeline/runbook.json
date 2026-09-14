@@ -1,0 +1,6 @@
+{
+  "service": "capture-settle",
+  "oncall": "payments-platform",
+  "max_downtime": "45 min",
+  "note": "worst observed recovery, including a weekend page that went unanswered for 40 minutes"
+}
