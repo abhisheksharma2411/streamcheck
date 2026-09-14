@@ -1,0 +1,25 @@
+TITLE
+The Defect Is in the Arithmetic Between the Files: Static Detection of Exactly-Once Violations in Payment Pipelines
+
+AUTHORS
+Abhishek Sharma
+
+PRIMARY CLASS
+cs.SE
+
+CROSS-LIST
+cs.DB, cs.DC
+
+COMMENTS
+7 pages, 4 figures, 7 tables. Artifact (checker, corpus generator, Docker
+configuration, all raw results) archived at DOI 10.5281/zenodo.PLACEHOLDER;
+`make reproduce` rebuilds every figure and table from the raw results.
+
+REPORT NUMBER / JOURNAL REFERENCE / MSC CLASS
+(leave blank)
+
+EXTERNAL DOI
+(add the Zenodo DOI once minted)
+
+ACM CLASS
+D.2.4; D.2.5; H.2.4

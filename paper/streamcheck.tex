@@ -326,6 +326,31 @@ executed at a fraction of them. That is an argument about our own method, so we
 measure it: Section~\ref{sec:results} reports the verdict of every witness
 across four orders of magnitude of compression.
 
+\paragraph{One witness, end to end} The boundary case whose key lifetime sits
+one second under the replay horizon produces this. Compressed so the lifetime
+is 30 seconds, the witness says: one order, fail once the charge has gone
+through, stay down for 30.0 seconds. The pipeline's own log, from the run and
+from the sufficient-lifetime control, differs in one line:
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}l@{}}
+\texttt{start pid=34847 restored=0 keys} \\
+\texttt{effect ord-witness-1 key=ord-witness-1:stable charged=True} \\
+\texttt{start pid=35991 restored=0 keys} \\
+\texttt{effect ord-witness-1 key=ord-witness-1:stable \textbf{charged=True}} \\
+\midrule
+\texttt{...control, lifetime long enough to cover the replay:} \\
+\texttt{effect ord-witness-1 key=ord-witness-1:stable \textbf{charged=False}} \\
+\end{tabular}
+\end{center}
+
+The key is identical in both. The record is identical. The kill is identical.
+The provider observed 30.6 seconds between the two attempts, and in one case
+that was inside the lifetime and in the other it was not. Nothing about the
+pipeline distinguishes the two runs, which is the argument for why the defect
+is in the configuration rather than in the code.
+
 \textbf{Some findings get no witness.} A shared transactional id prefix needs a
 second job to manifest; an undeclared key lifetime is the absence of a fact
 rather than a fact. Saying a rule has no runnable scenario is better than
@@ -351,6 +376,35 @@ arithmetic would fail them whichever way it erred. Two \emph{decoys} look
 alarming and are correct: two-second checkpointing, which shortens the horizon
 and makes every relation easier to satisfy, and a long client retry window that
 still fits inside the key's lifetime.
+
+\begin{table}[t]
+\caption{The corpus. Sixteen mutations name the rule meant to catch them and
+are the weakest evidence; the boundary and decoy cases are the informative
+ones.}
+\label{tab:corpus}
+\centering
+\footnotesize
+\begin{tabular}{llr}
+\toprule
+kind & correct answer & cases \\
+\midrule
+16 defect mutations       & the named rule & 480 \\
+clean pipelines           & no finding     &  30 \\
+boundary, defective side  & SC101 or SC102 &  60 \\
+boundary, correct side    & no finding     &  60 \\
+2 decoys                  & no finding     &  60 \\
+\midrule
+\multicolumn{2}{l}{5 shapes $\times$ 21 mutations $\times$ 2 $\times$ 3 seeds} & 630 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The five shapes are a capture taken to a processor, a refund, a reconciliation
+of a ledger against a bank feed, a batch payout, and a dunning retry. The
+reconciliation shape is P5's setting and carries its source lateness bound,
+which is why its replay horizon exceeds what the engine configuration alone
+would suggest --- the one place in the corpus where a fact from a job
+definition changes a duration relation.
 
 Execution uses apache/kafka 3.9.0 in KRaft mode, a pipeline process killed with
 SIGKILL, and an HTTP provider that expires keys on a timer. Nothing about the
@@ -495,7 +549,75 @@ homogeneity argument predicts and is worth having measured rather than assumed.
 \subsection{Against a real broker}
 \label{sec:live}
 
-Pending.
+Sixteen witnesses were replayed against apache/kafka 3.9.0, each in three
+arms: as synthesised, with a provider that never forgets the key, and with a
+provider whose key lifetime is finite but comfortably longer than the replay
+takes. Forty-eight executions, no errors. All sixteen reproduce the observable
+they predicted.
+
+\begin{table}[t]
+\caption{Live execution. ``inf'' is the control whose provider never forgets;
+``suf'' is the control with a finite but sufficient lifetime. The gap is
+between the two attempts, on the provider's clock, against a 30-second scaled
+key lifetime.}
+\label{tab:live}
+\centering
+\footnotesize
+\begin{tabular}{llrrrr}
+\toprule
+rule & & gap (s) & def. & inf & suf \\
+\midrule
+SC101 & key lifetime below horizon & 30.6--48.0 & 2 & 1 & 1 \\
+SC102 & state TTL below horizon    & 30.6--32.5 & 2 & 1 & 1 \\
+SC105 & retry window above lifetime& 30.8--48.0 & 2 & 1 & 1 \\
+\midrule
+SC001 & effect not idempotent      & 6.0 & 2 & 2 & 2 \\
+SC002 & non-deterministic key      & 5.9 & 2 & 2 & 2 \\
+SC003 & missing key                & 5.9 & 2 & 2 & 2 \\
+\midrule
+SC006 & effect before dedup        & 0.0 & 1 & 1 & 1 \\
+SC103 & transaction timeout        & 5.9--6.0 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:live} separates three behaviours, and the separation is the
+result. The three lifetime defects charge twice as configured, once when the
+provider never forgets, and once again when it forgets only after a lifetime
+long enough to cover the replay. The observed gap exceeds the key lifetime in
+exactly those six runs and in no other. That is the mechanism the rules claim,
+observed rather than argued.
+
+The three key defects charge twice in all three arms. This is correct and
+worth stating: when the key is absent, or freshly generated on each attempt,
+no lifetime helps, because the provider has nothing to recognise. Their second
+charge is attributable to the key rather than to the lifetime, and the
+experiment says so by the controls failing to remove it.
+
+SC006 and SC103 charge once everywhere, agreeing with the interpreter.
+
+\paragraph{An earlier version of this experiment was measuring the harness}
+Witnesses are executed compressed, and the first live arm scaled key lifetimes
+to 1.2 seconds. Killing the worker, waiting for the consumer group to evict it
+and restarting costs about six seconds of real time --- we measured
+5.9 to 6.0 seconds across repetitions --- so every key expired during the
+restart whatever downtime the witness specified. Under that arrangement SC103
+witnesses whose configured downtime was nineteen milliseconds reproduced a
+double charge, which is not a result about SC103 but a result about our test
+rig.
+
+The tell was in the results table: a column showing the configured downtime
+sitting three orders of magnitude below the lifetime it was supposed to
+outlast. The fix has three parts, and all three are needed. Scale lifetimes to
+thirty seconds, several times the overhead. Record the gap the provider
+actually observed, so the comparison against the lifetime can be checked rather
+than assumed. And add the sufficient-lifetime arm: if the rig were expiring
+keys on its own, that arm would charge twice as well, and it charges once in
+every one of the runs where it should.
+
+We report this at length because the failure was silent in the direction that
+flatters the paper. A harness that expires keys on its own confirms every
+lifetime defect put to it.
 
 \subsection{What testing would cost}
 
@@ -580,6 +702,15 @@ the sense of~\cite{t8}'s provider-aware contract, and treat its absence as a
 finding rather than defaulting it. A tool that guessed would be asserting
 something about a third party it has no basis for.
 
+\paragraph{The horizon is an operational number, not an engineering one}
+Four of the six terms in~\eqref{eq:horizon} come from configuration. The one
+that dominates is not: how long a job may stay dead is a property of who is on
+call, how alerts are routed, and whether the page goes out at three in the
+afternoon or three in the morning. Shortening it is the cheapest fix for every
+duration defect here, and it is the one no code change achieves. The tool's
+most useful output may be that a number in a runbook is load-bearing for
+correctness, which is not where teams look for correctness arguments.
+
 \paragraph{Execution as a check on the checker} The most useful thing the
 witnesses did was disagree with us. Two rules were wrong about their own
 severity, and no amount of re-reading them would have shown it; running them
@@ -607,6 +738,16 @@ did not reproduce.
 
 Each check is sufficient for a violation, not necessary. A pipeline with no
 findings has not been proved correct, and the checker says so.
+
+The live arm covers sixteen witnesses, two per rule that admits one, rather
+than the whole corpus: three arms at roughly a minute each puts an exhaustive
+run beyond a reasonable budget. The interpreter covers every witness and agrees
+with the broker on all sixteen, which is some comfort and not a substitute.
+
+The drain factor --- how long a backlog takes to clear relative to the outage
+that produced it --- is held at one throughout and never swept. A busier
+pipeline drains more slowly and has a longer horizon than we compute, so our
+estimate is optimistic in a direction that matters.
 
 The configuration sweep uses menus we assembled from values practitioners
 report. It supports a statement about where the threshold lies, not about how

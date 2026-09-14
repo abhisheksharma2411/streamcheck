@@ -111,8 +111,24 @@ def build_claims() -> list[tuple[str, object, object]]:
 
     if e3 and e3.get("status") == "ok":
         t = e3["totals"]
-        c.append(("live runs", t["runs"], t["runs"]))          # recorded, not asserted
+        c.append(("live witness runs", 16, t["runs"]))
+        c.append(("live executions (three arms)", 48, t["runs"] * 3))
         c.append(("live errors", 0, t["errors"]))
+        c.append(("live reproduced", 16, t["reproduced"]))
+        c.append(("live double charges", 12, t["double_charge"]))
+        c.append(("live attributable to lifetime", 6, t["attributable"]))
+        c.append(("live sufficient-arm double charges", 6, t["sufficient_charged_twice"]))
+        c.append(("harness restart overhead ms", 6000.0, e3["config"]["harness_restart_ms"]))
+        c.append(("scaled key lifetime ms", 30000, e3["config"]["target_scaled_key_ttl_ms"]))
+        # The mechanism: the gap exceeds the lifetime exactly for the lifetime
+        # defects, and for nothing else.
+        exceed = {r["rule"] for r in e3["runs"] if r["gap_exceeds_ttl"]}
+        c.append(("rules where the gap exceeds the lifetime",
+                  ["SC101", "SC102", "SC105"], sorted(exceed)))
+        c.append(("runs where the gap exceeds the lifetime", 6,
+                  sum(1 for r in e3["runs"] if r["gap_exceeds_ttl"])))
+        attributable_rules = sorted({r["rule"] for r in e3["runs"] if r["attributable"]})
+        c.append(("attributable rules", ["SC101", "SC102", "SC105"], attributable_rules))
     return c
 
 
