@@ -33,6 +33,7 @@ def build_claims() -> list[tuple[str, object, object]]:
     e1, e2, e4 = load("e1_detection.json"), load("e2_witness.json"), load("e4_artifacts.json")
     e5, e6, e7 = load("e5_random.json"), load("e6_scale.json"), load("e7_prevalence.json")
     e8, e3 = load("e8_broker.json"), load("e3_live.json")
+    e9 = load("e9_example.json")
     c: list[tuple[str, object, object]] = []
 
     if e1:
@@ -129,6 +130,43 @@ def build_claims() -> list[tuple[str, object, object]]:
                   sum(1 for r in e3["runs"] if r["gap_exceeds_ttl"])))
         attributable_rules = sorted({r["rule"] for r in e3["runs"] if r["attributable"]})
         c.append(("attributable rules", ["SC101", "SC102", "SC105"], attributable_rules))
+    if e9:
+        h = e9["headline"]
+        c.append(("example checkpoint interval, seconds", 60,
+                  h["checkpoint_interval_seconds"]))
+        c.append(("example restart, seconds", 30, h["restart_seconds"]))
+        c.append(("example worst recovery, minutes", 45.0,
+                  h["worst_recovery_minutes"]))
+        c.append(("example key lifetime, hours", 24.0, h["key_ttl_hours"]))
+        c.append(("example replay horizon, hours", 1.54,
+                  h["replay_horizon_hours"]))
+        c.append(("example lifetime needed, minutes", 46.5,
+                  h["lifetime_needed_minutes"]))
+        c.append(("example lifetime configured, minutes", 15.0,
+                  h["lifetime_configured_minutes"]))
+        c.append(("the horizon fits inside the key", True,
+                  h["horizon_inside_the_key"]))
+        c.append(("the transaction lifetime does not fit", False,
+                  h["lifetime_is_enough"]))
+
+    if e3:
+        # The live arm runs real processes against a real broker, so the gap
+        # between the two attempts is measured rather than chosen. The paper
+        # quotes the tightest one -- the run that cleared the scaled key
+        # lifetime by the smallest margin -- because that is the case where
+        # the two arms are hardest to tell apart.
+        over = [r for r in e3["runs"] if r.get("gap_exceeds_ttl")]
+        if over:
+            tightest = min(r["defective"]["observed_gap_ms"] for r in over)
+            c.append(("tightest observed gap over the key lifetime, seconds",
+                      30.6, round(tightest / 1000, 1)))
+            c.append(("the scaled key lifetime, seconds", 30.0,
+                      over[0]["scaled_key_ttl_ms"] / 1000))
+            c.append(("the defective arm charges twice", 2,
+                      max(r["defective"]["charges"] for r in over)))
+            c.append(("the control arm charges once", 1,
+                      max(r["control"]["charges"] for r in over)))
+
     return c
 
 

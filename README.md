@@ -77,7 +77,7 @@ combination is not.
 ## Reproducing
 
 ```bash
-make reproduce     # broker up, E1-E8, figures, paper, tests, claim check
+make reproduce     # broker up, E1-E9, figures, paper, tests, claim check
 make fast          # everything that does not need a broker
 make verify        # check every number in the paper against results/
 ```
@@ -95,7 +95,7 @@ src/streamcheck/
   provider.py   a payment API that forgets keys on a timer
   frontend.py   read facts out of flink-conf / properties / SQL / runbook
   corpus.py     5 shapes x 21 mutations, with boundary cases and decoys
-experiments/    E1-E8, each writing one JSON to results/
+experiments/    E1-E9, each writing one JSON to results/
 ```
 
 ## Honest limitations

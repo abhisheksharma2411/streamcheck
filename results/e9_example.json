@@ -1,0 +1,35 @@
+{
+  "config": {
+    "pipeline": "data/example-pipeline"
+  },
+  "declared": {
+    "checkpoint_interval_s": 60.0,
+    "idempotency_key_ttl_h": 24.0,
+    "restart_s": 30.0,
+    "transaction_timeout_min": 15.0,
+    "worst_recovery_min": 45.0
+  },
+  "derived": {
+    "lifetime_configured_min": 15.0,
+    "lifetime_needed_min": 46.5,
+    "replay_horizon_h": 1.5375,
+    "replay_horizon_min": 92.25
+  },
+  "headline": {
+    "checkpoint_interval_seconds": 60,
+    "horizon_inside_the_key": true,
+    "key_ttl_hours": 24.0,
+    "lifetime_configured_minutes": 15.0,
+    "lifetime_is_enough": false,
+    "lifetime_needed_minutes": 46.5,
+    "replay_horizon_hours": 1.54,
+    "restart_seconds": 30,
+    "worst_recovery_minutes": 45.0
+  },
+  "provenance": {
+    "git": "c8beea30ce97033555210a37434cf4dffbe1a9eb-dirty",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "utc": "2026-09-16T00:19:43Z"
+  }
+}

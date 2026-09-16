@@ -40,6 +40,7 @@ fast: setup ## everything except the live execution arm
 
 experiments: fast up ## every experiment, including the ones needing a broker
 	$(PY) experiments/e8_broker.py
+	$(PY) experiments/e9_example.py
 	$(PY) experiments/e3_live.py
 
 figures: ## regenerate every figure from results/
