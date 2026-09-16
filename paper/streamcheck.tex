@@ -25,8 +25,8 @@ Whether a streaming payment pipeline charges a customer twice after a restart
 turns on a comparison nobody performs: how long the provider remembers an
 idempotency key, against how stale a record can be when the pipeline processes
 it for the second time. The first number is in the provider's documentation.
-The second is not written anywhere --- it is assembled from a checkpoint
-interval in one file, a recovery assumption in a runbook, a restart delay in a
+The second is not written anywhere. It is assembled from a checkpoint interval
+in one file, a recovery assumption in a runbook, a restart delay in a
 third place and a source's lateness bound in a fourth. Each file is defensible
 alone, and the fault is in the relation between them. We give a checker that
 gathers those facts and states the relations, and a synthesiser that turns each
@@ -37,9 +37,9 @@ fewer than three artifacts, and no single artifact yields more than 35 of the
 305 duration findings. Executing the witnesses corrected our own rules: two
 were demoted after their scenarios produced a repeated call that the provider's
 idempotency absorbed rather than a second charge. On a real Kafka broker,
-witnesses reproduce the double charge, and a matched control in which the
-provider never forgets the key does not --- which is what makes the second
-charge attributable to the lifetime rather than to the replay. Fault injection
+witnesses reproduce the double charge, and a matched control in which the provider never forgets the key does not.
+That is what makes the second charge attributable to the lifetime and not to
+the replay. Fault injection
 finds the same defects only if the tester already assumed a long enough outage:
 one willing to simulate five minutes finds 15\% of them, and 12 hours is needed
 for all. We also find a configuration with no application-level fix at all:
@@ -104,8 +104,8 @@ rather than quietly fixed.
 One finding has no fix at the pipeline level. Kafka caps a producer's requested
 transaction timeout at fifteen minutes by default, and surviving a recovery
 assumption longer than about fourteen minutes requires more than that. The
-choice is then between a shorter assumption, a cluster-wide broker change, and
-giving up the transactional sink --- none of which is a setting in the job.
+choice is then between a shorter assumption, a cluster-wide broker change, and giving up the transactional sink. None of the three is a setting in the
+job.
 
 \section{Background and related work}
 
@@ -139,9 +139,9 @@ understood: the client supplies a key, the provider remembers it, and a repeat
 within its memory is a no-op returning the original result. What is less often
 stated is that the memory is finite, that its length is part of the API
 contract, and that a client whose retries can outlive it has no idempotency at
-all. Practitioner writing does say so --- the advice to never expire a key
-before the client's longest retry window is common --- and treats it as a
-guideline rather than something to check. The formal treatment
+all. Practitioner writing does say so. The advice to never expire a key before the
+client's longest retry window is common, and it is treated as a guideline
+instead of something to check. The formal treatment
 in~\cite{t8} gives operation identity and a conformance suite for the
 provider's side; what is missing on the consumer's side is the arithmetic
 relating that lifetime to how long a replay can take, which is what this paper
@@ -154,8 +154,7 @@ verification. SV-COMP's witness formats let one tool's verdict be validated by
 another, and the correctness-witness line of work exists precisely because a
 verdict without a checkable artifact asks to be taken on trust. Our witnesses
 are of the violation kind and are validated by execution rather than by a
-second analyser, which suits a defect whose observable --- money moved twice ---
-is unambiguous.
+second analyser, which suits a defect whose observable, money moved twice, is unambiguous.
 
 What we did not find, and searched for, is a static checker for the
 configuration relations below. Practitioner writing states several of them as
@@ -169,9 +168,8 @@ ReconStream~\cite{reconstream} gives a temporal correctness contract for
 streaming reconciliation, in which a verdict is admissible only once a
 source's declared lateness bound has passed. Its notion of a declared bound is
 what the replay horizon here borrows for its source term, and the reconciliation
-shape in our corpus is its setting. The two papers share a shape of argument ---
-a correctness property that is a relation between durations rather than between
-states --- applied at different points of the pipeline. Operation identity, what
+shape in our corpus is its setting. The two papers share a shape of argument, a correctness property that relates
+durations instead of states, applied at different points of the pipeline. Operation identity, what
 makes two records the same money movement, follows~\cite{t8}; the failure
 patterns the checks encode draw on~\cite{t4}.
 
@@ -213,9 +211,8 @@ retry window outlives the key. These are the ones that survive review, and they
 are arithmetic.
 
 Table~\ref{tab:rules} lists the thirteen checks. Each is a sufficient condition
-for a violation, not a certificate of correctness --- a pipeline with no
-findings has not been proved exactly-once, and we are careful not to say
-otherwise.
+for a violation, not a certificate of correctness. A pipeline with no findings has not been
+proved exactly-once, and we are careful not to say otherwise.
 
 \begin{table}[t]
 \caption{The checks. ``Artifacts'' is how many separate files the finding's
@@ -253,9 +250,9 @@ SC106 & required transaction timeout exceeds the broker cap & 2 \\
 Four front-ends, one per place a fact lives. \texttt{flink-conf.yaml} gives the
 checkpoint interval, the restart delay and the state TTL. The Kafka client
 properties give the transaction and delivery timeouts and the consumer's
-isolation level. The job SQL gives the topology --- which tables are read, which
-are written, whether a \texttt{ROW\_NUMBER} deduplication is present --- and the
-connector options give the delivery guarantee and any watermark lateness. A
+isolation level. The job SQL gives the topology: which tables are read, which are written,
+whether a \texttt{ROW\_NUMBER} deduplication is present. The connector options
+give the delivery guarantee and any watermark lateness. A
 runbook gives the recovery assumption, if one is written down.
 
 The fourth is different. How long the provider remembers an idempotency key is
@@ -270,9 +267,8 @@ is complaining about.
 The SQL reader is deliberately shallow: it recognises the shapes these
 pipelines are written in and reports what it cannot place, so a fact it fails
 to find becomes a statement about incomplete evidence rather than a silent
-default. Each extracted fact carries its origin, which is what lets a finding
-cite the files it depends on --- and what makes the measurement in
-Section~\ref{sec:artifacts} possible.
+default. Each extracted fact carries its origin, which is what lets a finding cite the files it depends on, and what makes the
+measurement in Section~\ref{sec:artifacts} possible.
 
 \subsection{A worked example}
 
@@ -303,9 +299,8 @@ configuration. With 60-second checkpointing and a 30-second restart delay, any
 assumption above 13.8 minutes is unsatisfiable; the bound moves between 9.8 and
 14.7 minutes across the checkpoint intervals we swept.
 
-This is not a misconfiguration. It is a configuration that does not exist, and
-the remedies --- shorten the recovery assumption, raise the cap cluster-wide,
-or drop the transactional sink --- are all decisions above the pipeline. We
+This is not a misconfiguration. It is a configuration that does not exist, and the remedies (shorten the recovery assumption, raise the cap cluster-wide,
+or drop the transactional sink) are all decisions above the pipeline. We
 report it as a distinct rule (SC106) from the ordinary too-small timeout
 (SC103), because telling a team to raise a number they cannot raise is worse
 than telling them nothing.
@@ -347,8 +342,8 @@ from the sufficient-lifetime control, differs in one line:
 
 The key is identical in both. The record is identical. The kill is identical.
 On the tightest of the six runs that cleared the scaled 30-second lifetime, the
-provider observed 30.6 seconds between the two attempts --- six tenths of a
-second of margin --- and in one case that was inside the lifetime and in the
+provider observed 30.6 seconds between the two attempts, six tenths of a
+second of margin, and in one case that was inside the lifetime and in the
 other it was not. Nothing about the
 pipeline distinguishes the two runs, which is the argument for why the defect
 is in the configuration rather than in the code.
@@ -405,7 +400,7 @@ The five shapes are a capture taken to a processor, a refund, a reconciliation
 of a ledger against a bank feed, a batch payout, and a dunning retry. The
 reconciliation shape is P5's setting and carries its source lateness bound,
 which is why its replay horizon exceeds what the engine configuration alone
-would suggest --- the one place in the corpus where a fact from a job
+would suggest. It is the one place in the corpus where a fact from a job
 definition changes a duration relation.
 
 Execution uses apache/kafka 3.9.0 in KRaft mode, a pipeline process killed with
@@ -460,8 +455,7 @@ need two, and 210 need three. Restricting to the 305 duration findings sharpens
 it: 210 need three artifacts, 30 need two, and 65 need one.
 
 Figure~\ref{fig:artifacts} puts that in the reviewer's position. The most
-informative single artifact yields 155 of 515 findings, and only 35 of the 305
-duration findings --- 11.5\% of them. The best pair reaches 185 findings and 65
+informative single artifact yields 155 of 515 findings, and only 35 of the 305 duration findings, 11.5\% of them. The best pair reaches 185 findings and 65
 duration findings. A reviewer reading the job, or the job and the producer
 properties, sees the structural defects and almost none of the arithmetic.
 
@@ -498,17 +492,15 @@ money twice are different things.}
 \end{figure}
 
 Of 515 findings, 335 admit a witness (65\%; 70.5\% of the duration findings).
-Every one of the 335 reproduces its predicted observable. Only 245 of them ---
-73\% --- move money twice.
+Every one of the 335 reproduces its predicted observable. Only 245 of them, 73\%, move money twice.
 
 That gap is a correction to our own rules rather than a property of the
 pipelines. Two rules originally predicted a double charge: an effect placed
 upstream of its deduplication, and a transaction timeout too short to survive
 the downtime. Both produce a second call to the provider, and with a sound key
-still in its lifetime the provider absorbs it. The pipelines are wrong --- they
-have no defence of their own and are correct only because the provider is ---
-but they are not double-charging, and reporting them as though they were would
-have been a false alarm on every one. Both were demoted to medium severity and
+still in its lifetime the provider absorbs it. The pipelines are wrong: they have no defence of their own and are correct
+only because the provider is. But they are not double-charging, and reporting
+them as though they were would have been a false alarm on every one. Both were demoted to medium severity and
 their witnesses now predict two invocations and one charge.
 
 \begin{table}[t]
@@ -601,9 +593,9 @@ SC006 and SC103 charge once everywhere, agreeing with the interpreter.
 \paragraph{An earlier version of this experiment was measuring the harness}
 Witnesses are executed compressed, and the first live arm scaled key lifetimes
 to 1.2 seconds. Killing the worker, waiting for the consumer group to evict it
-and restarting costs about six seconds of real time --- we measured
-5.9 to 6.0 seconds across repetitions --- so every key expired during the
-restart whatever downtime the witness specified. Under that arrangement SC103
+and restarting costs about six seconds of real time, measured at 5.9 to 6.0
+seconds across repetitions, so every key expired during the restart whatever
+downtime the witness specified. Under that arrangement SC103
 witnesses whose configured downtime was nineteen milliseconds reproduced a
 double charge, which is not a result about SC103 but a result about our test
 rig.
@@ -639,8 +631,8 @@ provider directly instead of waiting for a complaint. The only thing drawn at
 random is how long the job stays down.
 
 A tester whose longest simulated outage is five minutes finds 15\% of the
-duration defects, and more trials do not help --- the trigger is outside the
-distribution it samples from. At thirty minutes it reaches 59\%, at four hours
+duration defects, and more trials do not help. The trigger is outside the distribution it
+samples from. At thirty minutes it reaches 59\%, at four hours
 71\%, and only at twelve hours does it find all of them. The per-trial hit rate
 never exceeds 46\% even when the ceiling is two days.
 
@@ -665,9 +657,8 @@ longest simulated outage & defects ever found & per-trial hit rate \\
 \end{table}
 
 This is the honest form of the argument for static analysis here. It is not
-that testing cannot find these defects. It is that testing finds them only if
-someone already suspected that the outage could be long enough --- which is the
-fact the checker computes, in 3.8 microseconds, from files the team already
+that testing cannot find these defects. It is that testing finds them only if someone already suspected that the outage could be long enough, which
+is the fact the checker computes, in 3.8 microseconds, from files the team already
 has.
 
 \subsection{How much of the configuration space is affected}
@@ -680,9 +671,8 @@ dashed line is the broker's cap on what a producer may request.}
 \label{fig:cap}
 \end{figure}
 
-Sweeping 960 combinations of checkpoint interval, recovery assumption, key
-lifetime, state TTL and transaction timeout --- each drawn from values
-practitioners use --- 86.7\% produce at least one finding. That number is a
+Sweeping 960 combinations of checkpoint interval, recovery assumption, key lifetime, state TTL and transaction timeout, each drawn from values
+practitioners use, 86.7\% produce at least one finding. That number is a
 property of our menus and not of the field, and we do not present it as
 prevalence. What transfers is the threshold in Figure~\ref{fig:cap}: the
 required transaction timeout grows with the recovery assumption and crosses the
@@ -746,8 +736,8 @@ than the whole corpus: three arms at roughly a minute each puts an exhaustive
 run beyond a reasonable budget. The interpreter covers every witness and agrees
 with the broker on all sixteen, which is some comfort and not a substitute.
 
-The drain factor --- how long a backlog takes to clear relative to the outage
-that produced it --- is held at one throughout and never swept. A busier
+The drain factor, how long a backlog takes to clear relative to the outage
+that produced it, is held at one throughout and never swept. A busier
 pipeline drains more slowly and has a longer horizon than we compute, so our
 estimate is optimistic in a direction that matters.
 
