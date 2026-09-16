@@ -1,0 +1,3 @@
+{
+  "1.2": "The key lifetime the first live arm scaled to, in seconds. It is a parameter of a design we abandoned and describe in order to explain why it was wrong, so no current results file records it -- and one that did would mean the defective arm was still being run."
+}

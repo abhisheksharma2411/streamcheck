@@ -43,7 +43,11 @@ def build_claims() -> list[tuple[str, object, object]]:
         c.append(("injected defects", 480, t["positives"]))
         c.append(("recall %", 100.0, pct(t["recall"])))
         c.append(("false positives", 0, t["false_positive"]))
-        c.append(("analysis us per pipeline", 3.8, round(e1["cost"]["mean_us_per_pipeline"], 1)))
+        # Microseconds on one core, so the paper says "a few" and the check
+        # asserts the order of magnitude. The exact figure moved between runs
+        # that changed no code.
+        c.append(("analysis stays in the single-digit microseconds", True,
+                  1.0 <= e1["cost"]["mean_us_per_pipeline"] <= 9.9))
         c.append(("shapes", 5, e1["corpus"]["shapes"]))
         c.append(("mutations", 21, e1["corpus"]["mutations"]))
 

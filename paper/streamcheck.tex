@@ -430,7 +430,7 @@ the last committed offset.
 \subsection{Detection}
 
 Over 630 pipelines the checker recovers every injected defect and reports
-nothing on any of the 150 negatives, at 3.8 microseconds per pipeline. The
+nothing on any of the 150 negatives, at a few microseconds per pipeline. The
 recall figure should be read narrowly for the reason given above. The boundary
 cases are the informative part: all 30 instances either side of each threshold
 are classified correctly, on a two-second difference in configuration.
@@ -685,7 +685,7 @@ longest simulated outage & defects ever found & per-trial hit rate \\
 
 This is the honest form of the argument for static analysis here. It is not
 that testing cannot find these defects. It is that testing finds them only if someone already suspected that the outage could be long enough, which
-is the fact the checker computes, in 3.8 microseconds, from files the team already
+is the fact the checker computes, in microseconds, from files the team already
 has.
 
 \subsection{How much of the configuration space is affected}
