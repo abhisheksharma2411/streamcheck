@@ -167,6 +167,16 @@ def build_claims() -> list[tuple[str, object, object]]:
             c.append(("the control arm charges once", 1,
                       max(r["control"]["charges"] for r in over)))
 
+    if e8 and e8.get("status") == "ok":
+        c.append(("broker cap, ms", 900000, e8["transaction_max_timeout_ms"]))
+        c.append(("the cap is the broker default", True, e8["is_default"]))
+        c.append(("the refusal is measured, not quoted", True,
+                  e8.get("refusal_is_measured")))
+        c.append(("largest timeout the broker grants, ms", 900000,
+                  e8.get("largest_accepted_ms")))
+        c.append(("smallest timeout the broker refuses, ms", 900001,
+                  e8.get("smallest_refused_ms")))
+
     return c
 
 

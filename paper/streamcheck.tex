@@ -28,23 +28,30 @@ it for the second time. The first number is in the provider's documentation.
 The second is not written anywhere. It is assembled from a checkpoint interval
 in one file, a recovery assumption in a runbook, a restart delay in a
 third place and a source's lateness bound in a fourth. Each file is defensible
-alone, and the fault is in the relation between them. We give a checker that
-gathers those facts and states the relations, and a synthesiser that turns each
-finding into a runnable scenario: these records, kill the job here, bring it
-back after this long, and the provider will show two charges for one order.
-Across a corpus of 630 pipelines, 210 of 515 findings cannot be derived from
-fewer than three artifacts, and no single artifact yields more than 35 of the
-305 duration findings. Executing the witnesses corrected our own rules: two
-were demoted after their scenarios produced a repeated call that the provider's
-idempotency absorbed rather than a second charge. On a real Kafka broker,
-witnesses reproduce the double charge, and a matched control in which the provider never forgets the key does not.
-That is what makes the second charge attributable to the lifetime and not to
-the replay. Fault injection
-finds the same defects only if the tester already assumed a long enough outage:
-one willing to simulate five minutes finds 15\% of them, and 12 hours is needed
-for all. We also find a configuration with no application-level fix at all:
-above roughly a 14-minute recovery assumption, the transaction timeout required
-to survive it exceeds the broker's own cap.
+alone, and the fault is in the relation between them. We give a checker that gathers those facts and states the relations, and a
+synthesiser that turns each finding into a runnable scenario: these records,
+kill the job here, bring it back after this long, and the provider will show
+two charges for one order.
+
+The central measurement is how far apart the evidence lies. Across a corpus of
+630 pipelines we generated, 210 of 515 findings cannot be derived from fewer
+than three artifacts, and no single artifact yields more than 35 of the 305
+duration findings. Executing the witnesses corrected our own rules: two were
+demoted after their scenarios produced a repeated call that the provider's
+idempotency absorbed rather than a second charge. All 16 selected live
+witnesses reproduced their predicted observable against a real Kafka broker
+with a real process kill, and a matched control in which the provider never
+forgets the key did not, which is what makes the second charge attributable to
+the key lifetime and not to the replay.
+
+Fault injection finds the same defects only if the tester already assumed a
+long enough outage: one willing to simulate five minutes finds 15\% of them,
+and 12 hours is needed for all. A configuration sweep also locates a
+configuration with no application-level fix, where above roughly a 14-minute
+recovery assumption the transaction timeout required to survive it exceeds the
+broker's own cap. That threshold holds under the broker's default 15-minute
+cap and a modelled drain rate of one, and the sweep locates a threshold rather
+than estimating how common it is in deployed pipelines.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -288,16 +295,25 @@ configured. Raising it does not help, which is the next section.
 \section{The defect with no fix}
 
 Kafka caps a producer's requested transaction timeout at
-\texttt{transaction.max.timeout.ms}. We read the value from a running
-broker rather than from documentation: apache/kafka 3.9.0 reports
-900{,}000\,ms, and its synonym chain marks it \texttt{DEFAULT\_CONFIG}. A
-producer asking for more is refused.
+\texttt{transaction.max.timeout.ms}. We read the value from a running broker rather than from documentation:
+apache/kafka 3.9.0 reports 900{,}000\,ms, and its synonym chain marks it
+\texttt{DEFAULT\_CONFIG}. The refusal is measured too, at the boundary. A Java
+producer calling \texttt{initTransactions()} against that broker is granted
+60{,}000\,ms and granted 900{,}000\,ms, and refused at 900{,}001\,ms with
+\emph{the transaction timeout is larger than the maximum value allowed by the
+broker}. One millisecond either side of the cap is the difference between a
+pipeline that starts and one that does not.
 
 So for an exactly-once pipeline, the requirement $\mathrm{cp} + \mathrm{down} +
 \mathrm{restart} \le \text{cap}$ bounds the recovery assumption rather than the
-configuration. With 60-second checkpointing and a 30-second restart delay, any
-assumption above 13.8 minutes is unsatisfiable; the bound moves between 9.8 and
-14.7 minutes across the checkpoint intervals we swept.
+configuration. With 60-second checkpointing and a 30-second restart delay, any assumption
+above 13.8 minutes is unsatisfiable; the bound moves between 9.8 and 14.7
+minutes across the checkpoint intervals we swept. Every one of those figures
+is conditional on four things we chose or measured: the broker's default cap
+of 900{,}000\,ms, the drain factor of one held throughout, the replay-horizon
+formula of~\eqref{eq:horizon}, and the recovery model in which a job is
+restarted after a bounded outage. A cluster with a raised cap has no such
+threshold, and a drain factor above one lowers it.
 
 This is not a misconfiguration. It is a configuration that does not exist, and the remedies (shorten the recovery assumption, raise the cap cluster-wide,
 or drop the transactional sink) are all decisions above the pipeline. We
@@ -546,8 +562,19 @@ homogeneity argument predicts and is worth having measured rather than assumed.
 Sixteen witnesses were replayed against apache/kafka 3.9.0, each in three
 arms: as synthesised, with a provider that never forgets the key, and with a
 provider whose key lifetime is finite but comfortably longer than the replay
-takes. Forty-eight executions, no errors. All sixteen reproduce the observable
-they predicted.
+takes. Forty-eight executions, no errors. All 16 selected live witnesses
+reproduced their predicted observable.
+
+What that arm does and does not exercise is worth stating plainly, because
+``on a real broker'' can be read for more than it is. It uses a real Kafka
+broker, a real process death by \texttt{SIGKILL}, a real consumer group
+eviction and an HTTP provider with a real key lifetime. It does not use Flink:
+there is no Flink checkpointing, no rescaling, and no transactional Flink sink
+in this arm. The worker is a purpose-built consumer that commits offsets and
+calls the provider, which is the smallest thing that can exhibit the
+observable, and the sixteen witnesses are selected from the corpus rather than
+being all of it. The claim is therefore about the predicted observables of
+those sixteen, not about Flink's behaviour under recovery.
 
 \begin{table}[t]
 \caption{Live execution. ``inf'' is the control whose provider never forgets;
@@ -722,11 +749,12 @@ Kafka's real offset commit and redelivery, and the process really dies, but
 operator-level checkpointing and rescaling are not exercised. Pipelines are
 single-partition throughout.
 
-We read the broker's transaction timeout cap from a running broker but did not
-demonstrate a rejection: the Python client available does not implement
-transactions, and the console producer expires its batch before the timeout is
-refused. The cap's value is measured; the refusal is documented behaviour we
-did not reproduce.
+Both halves of the broker cap are now measured on one broker: its configured
+value, and its refusal at one millisecond past that value. Neither is a
+survey. A cluster whose operator has raised
+\texttt{transaction.max.timeout.ms} has a different cap and a different
+threshold, and we tested the default on apache/kafka 3.9.0 rather than a
+distribution of deployed settings.
 
 Each check is sufficient for a violation, not necessary. A pipeline with no
 findings has not been proved correct, and the checker says so.
@@ -753,15 +781,17 @@ one external document. Gathering them takes microseconds and finding the
 defects takes a comparison; what makes them survive is that nothing gathers
 them. Two things surprised us in the building. Executing the witnesses demoted
 two of our own rules, because a duplicate call the provider absorbs is not a
-double charge. And one configuration turns out to have no fix at the pipeline
-level at all: past a fourteen-minute recovery assumption, the transaction
-timeout that would be needed is larger than the broker will grant.
+double charge. And one configuration turns out to have no fix at the pipeline level at all:
+past a fourteen-minute recovery assumption, under the broker's default cap and
+a modelled drain rate of one, the transaction timeout that would be needed is
+larger than the broker will grant. The sweep locates that threshold; it does
+not say how many deployed pipelines sit past it, and we make no estimate of
+prevalence.
 
 \section*{Artifact availability}
 
 Code, corpus generator, Docker configuration and every results file are at
-\url{https://github.com/abhisheksharma2411/streamcheck}, archived at
-DOI~\texttt{ZENODO\_DOI\_PLACEHOLDER}. \texttt{make reproduce} runs the pipeline
+\url{https://github.com/abhisheksharma2411/streamcheck}. An archival DOI is forthcoming. \texttt{make reproduce} runs the pipeline
 from a clean checkout: it starts a Kafka broker, runs every experiment,
 regenerates each figure from the raw results and rebuilds this paper. No number
 in the text is entered by hand; \texttt{scripts/verify\_claims.py} checks each
