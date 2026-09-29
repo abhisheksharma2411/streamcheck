@@ -86,7 +86,7 @@ review it will ever get.
 This paper is about finding those before the outage. The contribution is in
 three parts.
 
-A **model that spans artifacts.** Facts are gathered from the engine
+A \textbf{model that spans artifacts.} Facts are gathered from the engine
 configuration, the client properties, the job SQL, the runbook and a
 declaration of what the provider guarantees, and each fact keeps a record of
 where it came from. From them we derive the \emph{replay horizon}, and state
@@ -94,14 +94,14 @@ the defect classes as relations against it. Thirteen checks, split between
 structural defects a careful reviewer could find and duration defects that
 require the arithmetic.
 
-**Witnesses.** A static finding about a payment pipeline is easy to dismiss, so
+\textbf{Witnesses.} A static finding about a payment pipeline is easy to dismiss, so
 each becomes a runnable scenario with a predicted observable. Running them
 against a real Kafka broker, with the pipeline process really killed and a
 provider that really forgets, either produces the second charge or does not.
 Every run is paired with a control in which the provider never forgets, so the
 second charge is attributable to the key lifetime rather than to the replay.
 
-**An evaluation that corrected the thing being evaluated.** Two of our rules
+\textbf{An evaluation that corrected the thing being evaluated.} Two of our rules
 predicted a double charge and were wrong: their witnesses reproduce a repeated
 call that the provider absorbs. Both were demoted to medium severity and their
 witnesses now predict two invocations and one charge. The corpus's own clean
