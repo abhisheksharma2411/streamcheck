@@ -26,32 +26,27 @@ turns on a comparison nobody performs: how long the provider remembers an
 idempotency key, against how stale a record can be when the pipeline processes
 it for the second time. The first number is in the provider's documentation.
 The second is not written anywhere. It is assembled from a checkpoint interval
-in one file, a recovery assumption in a runbook, a restart delay in a
-third place and a source's lateness bound in a fourth. Each file is defensible
-alone, and the fault is in the relation between them. We give a checker that gathers those facts and states the relations, and a
-synthesiser that turns each finding into a runnable scenario: these records,
-kill the job here, bring it back after this long, and the provider will show
-two charges for one order.
-
-The central measurement is how far apart the evidence lies. Across a corpus of
-630 pipelines we generated, 210 of 515 findings cannot be derived from fewer
-than three artifacts, and no single artifact yields more than 35 of the 305
+in one file, a recovery assumption in a runbook, a restart delay in a third
+and a source's lateness bound in a fourth. Each file is defensible alone; the
+fault is in the relation between them. We give a checker that gathers those
+facts and states the relations, and a synthesiser that turns each finding into
+a runnable scenario: these records, kill the job here, bring it back after
+this long, and the provider will show two charges for one order. The central
+measurement is how far apart the evidence lies. Across a corpus of 630
+pipelines we generated, 210 of 515 findings cannot be derived from fewer than
+three artifacts, and no single artifact yields more than 35 of the 305
 duration findings. Executing the witnesses corrected our own rules: two were
-demoted after their scenarios produced a repeated call that the provider's
+demoted after their scenarios produced a repeated call the provider's
 idempotency absorbed rather than a second charge. All 16 selected live
 witnesses reproduced their predicted observable against a real Kafka broker
 with a real process kill, and a matched control in which the provider never
-forgets the key did not, which is what makes the second charge attributable to
-the key lifetime and not to the replay.
-
-Fault injection finds the same defects only if the tester already assumed a
-long enough outage: one willing to simulate five minutes finds 15\% of them,
-and 12 hours is needed for all. A configuration sweep also locates a
-configuration with no application-level fix, where above roughly a 14-minute
+forgets the key did not, which makes the second charge attributable to the key
+lifetime and not the replay. Fault injection finds the same defects only if
+the tester already assumed a long enough outage: one willing to simulate five
+minutes finds 15\% of them, and 12 hours is needed for all. A sweep also
+locates a configuration with no application-level fix, where above a 14-minute
 recovery assumption the transaction timeout required to survive it exceeds the
-broker's own cap. That threshold holds under the broker's default 15-minute
-cap and a modelled drain rate of one, and the sweep locates a threshold rather
-than estimating how common it is in deployed pipelines.
+broker's own cap.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -86,7 +81,7 @@ review it will ever get.
 This paper is about finding those before the outage. The contribution is in
 three parts.
 
-A **model that spans artifacts.** Facts are gathered from the engine
+A \textbf{model that spans artifacts.} Facts are gathered from the engine
 configuration, the client properties, the job SQL, the runbook and a
 declaration of what the provider guarantees, and each fact keeps a record of
 where it came from. From them we derive the \emph{replay horizon}, and state
@@ -94,14 +89,14 @@ the defect classes as relations against it. Thirteen checks, split between
 structural defects a careful reviewer could find and duration defects that
 require the arithmetic.
 
-**Witnesses.** A static finding about a payment pipeline is easy to dismiss, so
+\textbf{Witnesses.} A static finding about a payment pipeline is easy to dismiss, so
 each becomes a runnable scenario with a predicted observable. Running them
 against a real Kafka broker, with the pipeline process really killed and a
 provider that really forgets, either produces the second charge or does not.
 Every run is paired with a control in which the provider never forgets, so the
 second charge is attributable to the key lifetime rather than to the replay.
 
-**An evaluation that corrected the thing being evaluated.** Two of our rules
+\textbf{An evaluation that corrected the thing being evaluated.} Two of our rules
 predicted a double charge and were wrong: their witnesses reproduce a repeated
 call that the provider absorbs. Both were demoted to medium severity and their
 witnesses now predict two invocations and one charge. The corpus's own clean
