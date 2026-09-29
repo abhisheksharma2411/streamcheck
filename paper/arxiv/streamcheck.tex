@@ -353,9 +353,10 @@ from the sufficient-lifetime control, differs in one line:
 
 The key is identical in both. The record is identical. The kill is identical.
 On the tightest of the six runs that cleared the scaled 30-second lifetime, the
-provider observed 30.6 seconds between the two attempts, six tenths of a
-second of margin, and in one case that was inside the lifetime and in the
-other it was not. Nothing about the
+provider observed 30.5 seconds between the two attempts --- little more than
+half a second of margin, and a wall-clock figure that moves by a tenth or two
+between runs that change no code --- and in one case that was inside the
+lifetime and in the other it was not. Nothing about the
 pipeline distinguishes the two runs, which is the argument for why the defect
 is in the configuration rather than in the code.
 
@@ -463,7 +464,11 @@ total                           & 630 & 630 & 0 false positives \\
 
 Of 515 findings across the corpus, 245 are derivable from a single artifact, 60
 need two, and 210 need three. Restricting to the 305 duration findings sharpens
-it: 210 need three artifacts, 30 need two, and 65 need one.
+it: 210 need three artifacts, 30 need two, and 65 need one. The two counts are
+equal and duration findings are a subset of all findings, so the sets coincide:
+\emph{every} finding that needs three artifacts is a duration finding. Needing
+to read across the configuration is not a general property of static analysis
+here --- it is what the replay horizon costs.
 
 Figure~\ref{fig:artifacts} puts that in the reviewer's position. The most
 informative single artifact yields 155 of 515 findings, and only 35 of the 305 duration findings, 11.5\% of them. The best pair reaches 185 findings and 65
@@ -583,13 +588,13 @@ key lifetime.}
 \toprule
 rule & & gap (s) & def. & inf & suf \\
 \midrule
-SC101 & key lifetime below horizon & 30.6--48.0 & 2 & 1 & 1 \\
-SC102 & state TTL below horizon    & 30.6--32.5 & 2 & 1 & 1 \\
-SC105 & retry window above lifetime& 30.8--48.0 & 2 & 1 & 1 \\
+SC101 & key lifetime below horizon & 30.5--47.9 & 2 & 1 & 1 \\
+SC102 & state TTL below horizon    & 30.7--32.4 & 2 & 1 & 1 \\
+SC105 & retry window above lifetime& 30.8--47.9 & 2 & 1 & 1 \\
 \midrule
-SC001 & effect not idempotent      & 6.0 & 2 & 2 & 2 \\
-SC002 & non-deterministic key      & 5.9 & 2 & 2 & 2 \\
-SC003 & missing key                & 5.9 & 2 & 2 & 2 \\
+SC001 & effect not idempotent      & 6.1 & 2 & 2 & 2 \\
+SC002 & non-deterministic key      & 6.2 & 2 & 2 & 2 \\
+SC003 & missing key                & 5.9--6.0 & 2 & 2 & 2 \\
 \midrule
 SC006 & effect before dedup        & 0.0 & 1 & 1 & 1 \\
 SC103 & transaction timeout        & 5.9--6.0 & 1 & 1 & 1 \\

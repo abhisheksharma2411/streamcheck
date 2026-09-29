@@ -71,6 +71,11 @@ def build_claims() -> list[tuple[str, object, object]]:
                   e4["artifacts_needed_histogram"].get("3")))
         c.append(("duration findings needing 3 artifacts", 210,
                   e4["duration_artifacts_needed_histogram"].get("3")))
+        # Duration findings are a subset of all findings, so equal counts in
+        # the three-artifact bucket mean the two sets are the same set.
+        c.append(("every three-artifact finding is a duration finding", True,
+                  e4["artifacts_needed_histogram"].get("3")
+                  == e4["duration_artifacts_needed_histogram"].get("3")))
         c.append(("best single artifact findings", 155, h["best_single_artifact_findings"]))
         c.append(("best single artifact %", 30.1, pct(h["best_single_artifact_share"])))
         c.append(("best single artifact duration findings", 35,
@@ -162,8 +167,14 @@ def build_claims() -> list[tuple[str, object, object]]:
         over = [r for r in e3["runs"] if r.get("gap_exceeds_ttl")]
         if over:
             tightest = min(r["defective"]["observed_gap_ms"] for r in over)
+            # Wall clock. It moved 30.6 -> 30.5 between runs that changed no
+            # code, so what is asserted is that the margin is under a second,
+            # which is the property the argument rests on.
+            ttl_s = over[0]["scaled_key_ttl_ms"] / 1000
             c.append(("tightest observed gap over the key lifetime, seconds",
-                      30.6, round(tightest / 1000, 1)))
+                      30.5, round(tightest / 1000, 1)))
+            c.append(("the tightest margin is under a second", True,
+                      0 < (tightest / 1000) - ttl_s < 1.0))
             c.append(("the scaled key lifetime, seconds", 30.0,
                       over[0]["scaled_key_ttl_ms"] / 1000))
             c.append(("the defective arm charges twice", 2,

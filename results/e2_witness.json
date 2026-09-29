@@ -133,10 +133,10 @@
     }
   },
   "provenance": {
-    "git": "50e725959a3500ae25982b9914c4cae473ce0ee4",
-    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "git": "d2748f736971c62089181d32f25fc76cecf9f15d",
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-09-16T01:50:58Z"
+    "utc": "2026-09-29T20:51:15Z"
   },
   "sufficient_alone": [
     "SC001",
