@@ -54,6 +54,8 @@ test: setup ## unit tests and sanity checks
 
 verify: ## check every number in the paper against results/
 	$(PY) scripts/verify_claims.py
+	$(PY) scripts/check_provenance.py
+	$(PY) scripts/check_prose_numbers.py
 
 reproduce: distclean setup up experiments figures paper test verify ## clean-room end to end
 	@echo
