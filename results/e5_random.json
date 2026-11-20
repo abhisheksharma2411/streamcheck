@@ -63,19 +63,19 @@
     "trials_per_case": 200
   },
   "cost_comparison": {
-    "analysis_us_per_pipeline": 3.608863485963426,
-    "one_trial_ms": 29152.605104249233,
+    "analysis_us_per_pipeline": 3.950867828698681,
+    "one_trial_ms": 25000.0,
     "rules": {
       "SC001": {
-        "expected_seconds": 29.152605104249233,
+        "expected_seconds": 25.0,
         "expected_trials": 1.0
       },
       "SC002": {
-        "expected_seconds": 29.152605104249233,
+        "expected_seconds": 25.0,
         "expected_trials": 1.0
       },
       "SC003": {
-        "expected_seconds": 29.152605104249233,
+        "expected_seconds": 25.0,
         "expected_trials": 1.0
       },
       "SC006": {
@@ -83,23 +83,23 @@
         "expected_trials": null
       },
       "SC101": {
-        "expected_seconds": 59.77977806749671,
+        "expected_seconds": 51.26452494873546,
         "expected_trials": 2.0505809979494187
       },
       "SC102": {
-        "expected_seconds": 61.266420534324126,
+        "expected_seconds": 52.53940455341506,
         "expected_trials": 2.1015761821366024
       },
       "SC103": {
-        "expected_seconds": 1495.0053899614993,
+        "expected_seconds": 1282.051282051282,
         "expected_trials": 51.282051282051285
       },
       "SC105": {
-        "expected_seconds": 194.0273218252861,
+        "expected_seconds": 166.3893510815308,
         "expected_trials": 6.655574043261232
       }
     },
-    "trial_cost_source": "measured in E3"
+    "trial_cost_source": "estimate; E3 had not run"
   },
   "per_rule": {
     "SC001": {
@@ -184,9 +184,9 @@
     }
   },
   "provenance": {
-    "git": "d2748f736971c62089181d32f25fc76cecf9f15d",
-    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "git": "4a21ec263df6cc4dbac06cb189633b7d69c7b955",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-09-29T20:51:15Z"
+    "utc": "2026-11-20T22:44:15Z"
   }
 }

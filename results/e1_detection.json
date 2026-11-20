@@ -40,9 +40,9 @@
     "shapes": 5
   },
   "cost": {
-    "mean_us_per_pipeline": 3.608863485963426,
+    "mean_us_per_pipeline": 3.950867828698681,
     "pipelines_analysed": 630,
-    "total_seconds": 0.002273583996156958
+    "total_seconds": 0.002489046732080169
   },
   "per_mutation": {
     "SC001_non_idempotent_effect": {
@@ -307,10 +307,10 @@
     }
   },
   "provenance": {
-    "git": "d2748f736971c62089181d32f25fc76cecf9f15d",
-    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "git": "4a21ec263df6cc4dbac06cb189633b7d69c7b955",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-09-29T20:51:14Z"
+    "utc": "2026-11-20T22:44:14Z"
   },
   "totals": {
     "cases": 630,

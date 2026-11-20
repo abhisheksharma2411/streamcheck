@@ -388,13 +388,16 @@ from the sufficient-lifetime control, differs in one line:
 \end{center}
 
 The key is identical in both. The record is identical. The kill is identical.
-On the tightest of the six runs that cleared the scaled 30-second lifetime, the
-provider observed 30.5 seconds between the two attempts --- little more than
-half a second of margin, and a wall-clock figure that moves by a tenth or two
-between runs that change no code --- and in one case that was inside the
-lifetime and in the other it was not. Nothing about the
-pipeline distinguishes the two runs, which is the argument for why the defect
-is in the configuration rather than in the code.
+Six runs cleared the scaled 30-second lifetime and ten did not, and the
+tightest of the six cleared it by about a second: in the run reported here the
+provider observed 31.0 seconds between the two attempts. That last figure is
+wall clock and it moves --- 30.6, then 30.5, then 31.0 across runs that changed
+no code --- so the claim we make is the ordering and not the value. What is
+reproducible is that the same six runs clear the lifetime every time and the
+other ten do not, and that in one arm the gap fell inside the lifetime and in
+the other it did not. Nothing about the pipeline distinguishes the two runs,
+which is the argument for why the defect is in the configuration rather than in
+the code.
 
 \textbf{Some findings get no witness.} A shared transactional id prefix needs a
 second job to manifest; an undeclared key lifetime is the absence of a fact
@@ -620,7 +623,8 @@ those sixteen, not about Flink's behaviour under recovery.
 \caption{Live execution. ``inf'' is the control whose provider never forgets;
 ``suf'' is the control with a finite but sufficient lifetime. The gap is
 between the two attempts, on the provider's clock, against a 30-second scaled
-key lifetime.}
+key lifetime. Gaps are wall clock from one run and move by up to a second
+between runs; the charge columns do not.}
 \label{tab:live}
 \centering
 \footnotesize
@@ -628,9 +632,9 @@ key lifetime.}
 \toprule
 rule & & gap (s) & def. & inf & suf \\
 \midrule
-SC101 & key lifetime below horizon & 30.5--47.9 & 2 & 1 & 1 \\
-SC102 & state TTL below horizon    & 30.7--32.4 & 2 & 1 & 1 \\
-SC105 & retry window above lifetime& 30.8--47.9 & 2 & 1 & 1 \\
+SC101 & key lifetime below horizon & 31.1--48.0 & 2 & 1 & 1 \\
+SC102 & state TTL below horizon    & 31.7--32.4 & 2 & 1 & 1 \\
+SC105 & retry window above lifetime& 31.0--47.9 & 2 & 1 & 1 \\
 \midrule
 SC001 & effect not idempotent      & 6.1 & 2 & 2 & 2 \\
 SC002 & non-deterministic key      & 6.2 & 2 & 2 & 2 \\

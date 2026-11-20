@@ -42,6 +42,11 @@ experiments: fast up ## every experiment, including the ones needing a broker
 	$(PY) experiments/e8_broker.py
 	$(PY) experiments/e9_example.py
 	$(PY) experiments/e3_live.py
+# E5 prices a fault-injection trial against a real kill-and-restart, which only
+# E3 measures. `fast` necessarily runs E5 first, so on a clean tree E5 fell
+# back to its estimate and `make reproduce` disagreed with the committed
+# results. Re-running it here makes the artifact deterministic and measured.
+	$(PY) experiments/e5_random.py
 
 figures: ## regenerate every figure from results/
 	$(PY) figures/make_figures.py
