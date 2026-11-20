@@ -15,13 +15,17 @@ the release, publish the release, then
 No submission API. Package built and verified; primary cs.SE, cross-list cs.DB
 and cs.DC. Needs the author's login.
 
-## Broker rejection probe not completed
+## Broker rejection probe --- CLOSED
 
-SC106 rests on `transaction.max.timeout.ms`, whose value is read from a running
-broker (900,000 ms, `DEFAULT_CONFIG`). Demonstrating a producer being *refused*
-for asking beyond it needs a client that implements transactions; the available
-Python client does not, and the console producer expires its batch first. A
-Java probe would close this and was not attempted.
+This entry said the refusal had not been demonstrated. It has been. The Java
+probe in `probe/TxnTimeoutProbe.java` was written and run, and
+`results/e8_broker.json` records `rejection_probe.completed: true` with three
+attempts against apache/kafka 3.9.0: 60,000 ms accepted, 900,000 ms accepted,
+and 900,001 ms refused with `The transaction timeout is larger than the maximum
+value allowed by the broker (as configured by transaction.max.timeout.ms)`.
+Both halves of the cap --- its configured value and the refusal one millisecond
+past it --- are measured on one broker. The paper says so and this file was
+stale.
 
 ## Flink not used in the execution arm
 

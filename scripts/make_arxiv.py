@@ -20,6 +20,110 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPER = ROOT / "paper"
 OUT = PAPER / "arxiv"
 
+#: Fields a human chooses once. Everything else in the metadata file is counted
+#: from the source or read off the built PDF, because the hand-maintained
+#: version drifted: it claimed 7 pages and carried a literal
+#: "10.5281/zenodo.PLACEHOLDER" into the Comments field.
+TITLE = ("The Defect Is in the Arithmetic Between the Files: Static Detection "
+         "of Exactly-Once Violations in Payment Pipelines")
+AUTHORS = "Abhishek Sharma"
+PRIMARY_CLASS = "cs.SE"
+#: cs.DC is defensible: the defects are properties of checkpoint/replay and
+#: broker transaction semantics in a distributed stream processor. cs.DB was
+#: dropped -- nothing here is about data management, and listing it would be
+#: for reach rather than fit.
+CROSS_LIST = "cs.DC"
+ACM_CLASS = "D.2.4; D.2.5"
+REPO_URL = "https://github.com/abhisheksharma2411/streamcheck"
+
+
+def _counts(tex: str, pdf: Path) -> dict:
+    pages = ""
+    if pdf.exists():
+        out = subprocess.run(["pdfinfo", str(pdf)], capture_output=True,
+                             text=True).stdout
+        for line in out.splitlines():
+            if line.startswith("Pages"):
+                pages = line.split()[-1]
+    return {
+        "pages": pages,
+        # Count float environments, not \includegraphics: a figure may be
+        # typeset rather than included.
+        "figures": len(re.findall(r"\\begin\{figure\*?\}", tex)),
+        "tables": len(re.findall(r"\\begin\{table\*?\}", tex)),
+    }
+
+
+def _release_tag() -> str:
+    """The tag CITATION.cff names, cross-checked against the paper.
+
+    The artifact statement names a release and CITATION.cff names a version.
+    They are edited at different times and nothing linked them. Disagreeing is
+    a build failure, not a note in the output.
+    """
+    cff = (ROOT / "CITATION.cff").read_text()
+    m = re.search(r"^version:\s*v?(\S+)", cff, re.M)
+    if not m:
+        raise SystemExit("CITATION.cff has no version field")
+    tag = f"v{m.group(1)}"
+    claimed = re.search(r"at release \\texttt\{v?([0-9][^}]*)\}",
+                        (PAPER / "streamcheck.tex").read_text())
+    if not claimed:
+        raise SystemExit("the artifact statement names no release")
+    if f"v{claimed.group(1)}" != tag:
+        raise SystemExit(
+            f"release mismatch: the paper says v{claimed.group(1)}, "
+            f"CITATION.cff says {tag}. Reconcile them before submitting.")
+    return tag
+
+
+def _metadata(tex: str, pdf: Path, tag: str) -> str:
+    c = _counts(tex, pdf)
+    comments = (
+        f"{c['pages']} pages, {c['figures']} figures, {c['tables']} tables. "
+        f"Checker, corpus generator, Docker configuration and every raw "
+        f"results file are at {REPO_URL} (release {tag}); `make reproduce` "
+        f"rebuilds every figure, table and number in the paper from the raw "
+        f"results."
+    )
+    return f"""TITLE
+{TITLE}
+
+AUTHORS
+{AUTHORS}
+
+PRIMARY CLASS
+{PRIMARY_CLASS}
+
+CROSS-LIST
+{CROSS_LIST}
+
+COMMENTS
+{comments}
+
+REPORT NUMBER
+(leave blank -- no institutional report series)
+
+JOURNAL REFERENCE
+(leave blank -- not published in a journal or proceedings)
+
+EXTERNAL DOI
+(leave blank. This field is for a DOI of THIS PAPER in a journal or
+proceedings. A Zenodo *software* DOI is not that, and putting one here asserts
+a published version that does not exist. If the artifact is archived, its DOI
+belongs in COMMENTS and in the paper's Artifact Availability section.)
+
+ACM CLASS
+{ACM_CLASS}
+
+MSC CLASS
+(leave blank -- not a mathematics paper)
+
+UPLOAD
+paper/streamcheck-arxiv.tar.gz -- one file. Do not upload the PDF; arXiv
+compiles the source. The abstract to paste is paper/arxiv_abstract.txt.
+"""
+
 
 def main() -> int:
     tex = (PAPER / "streamcheck.tex").read_text()
@@ -56,14 +160,25 @@ def main() -> int:
     abstract = _abstract("streamcheck")
     (PAPER / "arxiv_abstract.txt").write_text(abstract + "\n")
 
+    tag = _release_tag()
+    (PAPER / "arxiv_metadata.txt").write_text(
+        _metadata(tex, PAPER / "streamcheck-arxiv-verified.pdf", tag))
+
     print(f"arxiv package: {len(wanted)} referenced files + streamcheck.tex")
     for f in sorted(OUT.iterdir()):
         print(f"  {f.name}")
     print(f"  tarball     {tarball.relative_to(ROOT)} ({tarball.stat().st_size/1024:.0f} KB)")
     print(f"  standalone  {"OK" if ok else "FAILED"}, {detail}")
     print(f"  abstract    {len(abstract)} chars (arXiv limit 1920)")
+    print(f"  metadata    paper/arxiv_metadata.txt (release {tag})")
+    nonascii = sorted({c for c in abstract if ord(c) > 127})
+    print(f"  abstract ascii-only: {not nonascii}"
+          + (f" -- offending: {nonascii}" if nonascii else ""))
+    if nonascii:
+        print("  ERROR: the abstract must be ASCII for the submission form")
+        return 1
     if len(abstract) > 1920:
-        print("  WARNING: abstract exceeds the arXiv limit")
+        print("  ERROR: abstract exceeds the arXiv limit")
         return 1
     return 0 if ok else 1
 
