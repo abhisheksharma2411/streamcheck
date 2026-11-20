@@ -66,7 +66,7 @@ def _release_tag() -> str:
     if not m:
         raise SystemExit("CITATION.cff has no version field")
     tag = f"v{m.group(1)}"
-    claimed = re.search(r"at release \\texttt\{v?([0-9][^}]*)\}",
+    claimed = re.search(r"at\s+release\s+\\texttt\{v?([0-9][^}]*)\}",
                         (PAPER / "streamcheck.tex").read_text())
     if not claimed:
         raise SystemExit("the artifact statement names no release")

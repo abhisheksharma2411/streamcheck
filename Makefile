@@ -57,6 +57,9 @@ paper: figures ## build the PDF
 test: setup ## unit tests and sanity checks
 	$(PY) -m pytest tests/
 
+arxiv: paper ## build and verify the self-contained arXiv package
+	$(PY) scripts/make_arxiv.py
+
 verify: ## check every number in the paper against results/
 	$(PY) scripts/verify_claims.py
 	$(PY) scripts/check_provenance.py

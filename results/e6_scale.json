@@ -14,10 +14,10 @@
   },
   "disagreements": [],
   "provenance": {
-    "git": "4a21ec263df6cc4dbac06cb189633b7d69c7b955",
+    "git": "ce9f31992a4e523ebac03868374a4e4dff2b743e",
     "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-11-20T22:44:15Z"
+    "utc": "2026-11-20T23:10:22Z"
   },
   "totals": {
     "stability": 1.0,

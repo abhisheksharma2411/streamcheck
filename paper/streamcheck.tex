@@ -256,7 +256,7 @@ proved exactly-once, and we are careful not to say otherwise.
 evidence spans.}
 \label{tab:rules}
 \centering
-\footnotesize
+\footnotesize\setlength{\tabcolsep}{5pt}
 \begin{tabular}{llr}
 \toprule
 & & artifacts \\
@@ -375,11 +375,11 @@ through, stay down for 30.0 seconds. The pipeline's own log, from the run and
 from the sufficient-lifetime control, differs in one line:
 
 \begin{center}
-\footnotesize
+\scriptsize
 \begin{tabular}{@{}l@{}}
-\texttt{start pid=34847 restored=0 keys} \\
+\texttt{start pid=$p_1$ restored=0 keys} \\
 \texttt{effect ord-witness-1 key=ord-witness-1:stable charged=True} \\
-\texttt{start pid=35991 restored=0 keys} \\
+\texttt{start pid=$p_2$ restored=0 keys} \\
 \texttt{effect ord-witness-1 key=ord-witness-1:stable \textbf{charged=True}} \\
 \midrule
 \texttt{...control, lifetime long enough to cover the replay:} \\
@@ -389,13 +389,12 @@ from the sufficient-lifetime control, differs in one line:
 
 The key is identical in both. The record is identical. The kill is identical.
 Six runs cleared the scaled 30-second lifetime and ten did not, and the
-tightest of the six cleared it by about a second: in the run reported here the
-provider observed 31.0 seconds between the two attempts. That last figure is
-wall clock and it moves --- 30.6, then 30.5, then 31.0 across runs that changed
-no code --- so the claim we make is the ordering and not the value. What is
-reproducible is that the same six runs clear the lifetime every time and the
-other ten do not, and that in one arm the gap fell inside the lifetime and in
-the other it did not. Nothing about the pipeline distinguishes the two runs,
+tightest of the six cleared it by about a second. That margin is wall clock and
+it moves between runs that change no code, by enough that we quote it as a
+range in Table~\ref{tab:live} and make the claim about the ordering rather than
+the value. What reproduces is which runs clear the lifetime: the same six every
+time, and the other ten never, with the gap falling inside the lifetime in one
+arm and outside it in the other. Nothing about the pipeline distinguishes the two runs,
 which is the argument for why the defect is in the configuration rather than in
 the code.
 
@@ -449,7 +448,8 @@ boundary, correct side    & no finding     &  60 \\
 
 The five shapes are a capture taken to a processor, a refund, a reconciliation
 of a ledger against a bank feed, a batch payout, and a dunning retry. The
-reconciliation shape is P5's setting and carries its source lateness bound,
+reconciliation shape is the setting of~\cite{reconstream} and carries its
+source lateness bound,
 which is why its replay horizon exceeds what the engine configuration alone
 would suggest. It is the one place in the corpus where a fact from a job
 definition changes a duration relation.

@@ -91,8 +91,9 @@ require the arithmetic.
 
 \textbf{Witnesses.} A static finding about a payment pipeline is easy to dismiss, so
 each becomes a runnable scenario with a predicted observable. Running them
-against a real Kafka broker, with the pipeline process really killed and a
-provider that really forgets, either produces the second charge or does not.
+against a real Kafka broker, with the pipeline process really killed and a stub
+provider that really expires keys, either produces the second charge or does
+not.
 Every run is paired with a control in which the provider never forgets, so the
 second charge is attributable to the key lifetime rather than to the replay.
 
@@ -116,13 +117,18 @@ job.
 Flink's checkpointing and Kafka's transactional producer give end-to-end
 exactly-once for effects inside the system's own boundary: a record consumed,
 transformed and written back to Kafka can be made to appear once. The
-literature and documentation on this is mature, and we assume rather than
-restate it.
+mechanisms are well documented --- asynchronous barrier snapshotting for
+operator state~\cite{carbone2015}, and idempotent and transactional writes over
+the log in Kafka~\cite{wang2021} --- and we assume rather than restate them.
+Both are explicit about the boundary they hold within: Wang et
+al.~\cite{wang2021} frame the guarantee over writes back into the log.
 
 An external payment call is outside that boundary. The money moves before the
 checkpoint completes, no two-phase commit can take it back, and the only
 defence is the provider's idempotency. Everything in this paper is about that
-gap, which is where payment pipelines actually live.
+gap, which is where payment pipelines actually live. Our contribution is not a
+new exactly-once mechanism; it is a check on whether the durations a deployment
+is configured with let the mechanism it already has do its job.
 
 \subsection{Fault recovery and stream benchmarking}
 
@@ -134,29 +140,57 @@ correct. Mohammad~\cite{mohammad2025} surveys Kafka design patterns and
 benchmarking practice across 42 studies, finding recurring architectural
 patterns; again a description of what people build rather than a check on it.
 
+Fault injection searches the same space from the other end. Lineage-driven
+fault injection~\cite{alvaro2015} reasons backwards from a correct outcome to
+the failures that could have prevented it, and finds counterexamples in far
+fewer executions than random injection. The faults it reasons about are message
+and node failures whose effect is visible within the system under test.
+Section~\ref{sec:results} measures what happens when the trigger is instead the
+\emph{duration} of an outage: the tester has to sample a long enough downtime
+before anything is observable at all, and our measurement is of how long that
+has to be.
+
 \subsection{Idempotency as a contract}
 
-Idempotency keys are ubiquitous in payment APIs and the mechanism is well
-understood: the client supplies a key, the provider remembers it, and a repeat
-within its memory is a no-op returning the original result. What is less often
-stated is that the memory is finite, that its length is part of the API
-contract, and that a client whose retries can outlive it has no idempotency at
-all. Practitioner writing does say so. The advice to never expire a key before the
-client's longest retry window is common, and it is treated as a guideline
-instead of something to check. The formal treatment
-in~\cite{t8} gives operation identity and a conformance suite for the
-provider's side; what is missing on the consumer's side is the arithmetic
-relating that lifetime to how long a replay can take, which is what this paper
-supplies.
+Idempotency keys are ubiquitous in payment APIs, and the mechanism is being
+standardised: the IETF \texttt{Idempotency-Key} header
+draft~\cite{idempotencykey} has the client supply a key, the server recognise a
+repeat and return the original outcome. That specification is explicit that a
+server retains a key for a finite period and that the client must not assume
+retention beyond it, but it leaves the retention period to the server and says
+nothing about how a client should establish that its own retries fit inside
+whatever period it is given. That is the gap this paper addresses: the question
+is not whether a key is supplied but whether the longest delay the deployment
+can impose between two attempts fits inside the lifetime the provider offers.
+We take the identity of an operation --- which two requests count as the same
+money movement --- as given by the key the client supplies, and reason only
+about durations.
 
 \subsection{Static analysis and witnesses}
 
 Reporting a defect together with evidence that it is real is an old idea in
-verification. SV-COMP's witness formats let one tool's verdict be validated by
-another, and the correctness-witness line of work exists precisely because a
-verdict without a checkable artifact asks to be taken on trust. Our witnesses
-are of the violation kind and are validated by execution rather than by a
-second analyser, which suits a defect whose observable, money moved twice, is unambiguous.
+verification. Beyer et al.~\cite{beyer2015} define an exchange format for
+violation witnesses so that one verifier's counterexample can be replayed and
+confirmed by another, precisely because a verdict without a checkable artifact
+asks to be taken on trust. Our witnesses are of the same violation kind, with
+one difference that matters here: theirs are validated by a second analyser
+over the same program semantics, ours by execution against a running broker and
+a provider that really expires keys. The defect's observable --- money moved
+twice --- is decided by the provider's state rather than by agreement between
+two tools, so execution is available to us as a check and we use it.
+
+Static analysis that spans more than one artifact is likewise established
+outside this setting. PCheck~\cite{xu2016} generates checks that catch
+configuration errors at startup instead of at first use; cDep~\cite{chen2020}
+recovers dependencies between configuration parameters within and across
+components; Sotiropoulos et al.~\cite{sotiropoulos2020} detect missing ordering
+and notification dependencies in Puppet by relating a program's dependency
+graph to a recorded system-call trace. All three establish that correctness can
+hinge on relations no single file states. What distinguishes the relations here
+is their content: they are inequalities between \emph{durations}, one of whose
+terms is not in the repository at all but in a third party's API
+documentation, and another of which is an operational assumption written in
+prose in a runbook.
 
 What we did not find, and searched for, is a static checker for the
 configuration relations below. Practitioner writing states several of them as
@@ -167,13 +201,14 @@ retry window. The advice is correct and nothing checks it.
 \subsection{Sibling work}
 
 ReconStream~\cite{reconstream} gives a temporal correctness contract for
-streaming reconciliation, in which a verdict is admissible only once a
-source's declared lateness bound has passed. Its notion of a declared bound is
-what the replay horizon here borrows for its source term, and the reconciliation
-shape in our corpus is its setting. The two papers share a shape of argument, a correctness property that relates
-durations instead of states, applied at different points of the pipeline. Operation identity, what
-makes two records the same money movement, follows~\cite{t8}; the failure
-patterns the checks encode draw on~\cite{t4}.
+streaming reconciliation, in which a verdict is admissible only once a source's
+declared lateness bound has passed. Its notion of a declared bound is what the
+replay horizon here borrows for its source term, and the reconciliation shape
+in our corpus is its setting. The two share a shape of argument --- a
+correctness property that relates durations rather than states --- applied at
+different points of the pipeline. The defect families checked here are defined
+in Section~\ref{sec:results}'s corpus and in Table~\ref{tab:rules}, and are not
+inherited from elsewhere.
 
 \section{The replay horizon}
 
@@ -260,8 +295,9 @@ runbook gives the recovery assumption, if one is written down.
 The fourth is different. How long the provider remembers an idempotency key is
 a fact about the provider: it is in their API reference, it is load-bearing for
 correctness, and no artifact in the repository records it. We ask for it in a
-small manifest, in the sense of~\cite{t8}'s provider-aware contract, and when
-it is absent the checker emits a finding (SC100) rather than assuming a value.
+small manifest --- one declared duration per provider, alongside the key the
+client already supplies~\cite{idempotencykey} --- and when it is absent the
+checker emits a finding (SC100) rather than assuming a value.
 Guessing would mean asserting something about a third party on no basis, and
 the assumption would then be invisible in exactly the way the rest of the paper
 is complaining about.
@@ -301,7 +337,7 @@ pipeline that starts and one that does not.
 
 So for an exactly-once pipeline, the requirement $\mathrm{cp} + \mathrm{down} +
 \mathrm{restart} \le \text{cap}$ bounds the recovery assumption rather than the
-configuration. With 60-second checkpointing and a 30-second restart delay, any assumption
+configuration. With 60-second checkpointing and a 10-second restart delay, any assumption
 above 13.8 minutes is unsatisfiable; the bound moves between 9.8 and 14.7
 minutes across the checkpoint intervals we swept. Every one of those figures
 is conditional on four things we chose or measured: the broker's default cap
@@ -352,13 +388,15 @@ from the sufficient-lifetime control, differs in one line:
 \end{center}
 
 The key is identical in both. The record is identical. The kill is identical.
-On the tightest of the six runs that cleared the scaled 30-second lifetime, the
-provider observed 30.5 seconds between the two attempts --- little more than
-half a second of margin, and a wall-clock figure that moves by a tenth or two
-between runs that change no code --- and in one case that was inside the
-lifetime and in the other it was not. Nothing about the
-pipeline distinguishes the two runs, which is the argument for why the defect
-is in the configuration rather than in the code.
+Six runs cleared the scaled 30-second lifetime and ten did not, and the
+tightest of the six cleared it by about a second. That margin is wall clock and
+it moves between runs that change no code, by enough that we quote it as a
+range in Table~\ref{tab:live} and make the claim about the ordering rather than
+the value. What reproduces is which runs clear the lifetime: the same six every
+time, and the other ten never, with the gap falling inside the lifetime in one
+arm and outside it in the other. Nothing about the pipeline distinguishes the two runs,
+which is the argument for why the defect is in the configuration rather than in
+the code.
 
 \textbf{Some findings get no witness.} A shared transactional id prefix needs a
 second job to manifest; an undeclared key lifetime is the absence of a fact
@@ -567,8 +605,12 @@ reproduced their predicted observable.
 
 What that arm does and does not exercise is worth stating plainly, because
 ``on a real broker'' can be read for more than it is. It uses a real Kafka
-broker, a real process death by \texttt{SIGKILL}, a real consumer group
-eviction and an HTTP provider with a real key lifetime. It does not use Flink:
+broker, a real process death by \texttt{SIGKILL} and a real consumer group
+eviction. The provider is \emph{not} a commercial payment provider: it is a
+local HTTP stub that issues charges against an idempotency key and expires that
+key on a timer, which is the part of a provider's behaviour the rules reason
+about. No commercial provider was contacted and no money moved; a ``charge'' is
+a row in the stub's state. It does not use Flink:
 there is no Flink checkpointing, no rescaling, and no transactional Flink sink
 in this arm. The worker is a purpose-built consumer that commits offsets and
 calls the provider, which is the smallest thing that can exhibit the
@@ -580,7 +622,8 @@ those sixteen, not about Flink's behaviour under recovery.
 \caption{Live execution. ``inf'' is the control whose provider never forgets;
 ``suf'' is the control with a finite but sufficient lifetime. The gap is
 between the two attempts, on the provider's clock, against a 30-second scaled
-key lifetime.}
+key lifetime. Gaps are wall clock from one run and move by up to a second
+between runs; the charge columns do not.}
 \label{tab:live}
 \centering
 \footnotesize
@@ -588,9 +631,9 @@ key lifetime.}
 \toprule
 rule & & gap (s) & def. & inf & suf \\
 \midrule
-SC101 & key lifetime below horizon & 30.5--47.9 & 2 & 1 & 1 \\
-SC102 & state TTL below horizon    & 30.7--32.4 & 2 & 1 & 1 \\
-SC105 & retry window above lifetime& 30.8--47.9 & 2 & 1 & 1 \\
+SC101 & key lifetime below horizon & 31.1--48.0 & 2 & 1 & 1 \\
+SC102 & state TTL below horizon    & 31.7--32.4 & 2 & 1 & 1 \\
+SC105 & retry window above lifetime& 31.0--47.9 & 2 & 1 & 1 \\
 \midrule
 SC001 & effect not idempotent      & 6.1 & 2 & 2 & 2 \\
 SC002 & non-deterministic key      & 6.2 & 2 & 2 & 2 \\
@@ -661,7 +704,7 @@ A tester whose longest simulated outage is five minutes finds 15\% of the
 duration defects, and more trials do not help. The trigger is outside the distribution it
 samples from. At thirty minutes it reaches 59\%, at four hours
 71\%, and only at twelve hours does it find all of them. The per-trial hit rate
-never exceeds 46\% even when the ceiling is two days.
+reaches 46.2\% at its highest, with a two-day ceiling.
 
 \begin{table}[t]
 \caption{Duration defects found by a fault-injection tester, as a function of
@@ -716,9 +759,9 @@ spans artifacts is a small thing technically and a different thing
 organisationally.
 
 \paragraph{One fact has no home} The provider's key lifetime is load-bearing
-for correctness and lives in no repository. We ask for it to be declared, in
-the sense of~\cite{t8}'s provider-aware contract, and treat its absence as a
-finding rather than defaulting it. A tool that guessed would be asserting
+for correctness and lives in no repository. We ask for it to be declared
+alongside the key the client already supplies~\cite{idempotencykey}, and treat
+its absence as a finding rather than defaulting it. A tool that guessed would be asserting
 something about a third party it has no basis for.
 
 \paragraph{The horizon is an operational number, not an engineering one}
@@ -759,6 +802,16 @@ distribution of deployed settings.
 Each check is sufficient for a violation, not necessary. A pipeline with no
 findings has not been proved correct, and the checker says so.
 
+The provider in every arm is a local stub that implements an idempotency key
+with an expiry. That is deliberate --- it is the one provider behaviour the
+rules depend on, and it lets the key be expired on demand --- but it means the
+live results are evidence about the defect families in Table~\ref{tab:rules}
+under a provider that behaves as documented, not about any particular
+commercial provider's implementation. Reproducing a witness shows that the
+predicted observable follows from the configuration; it does not establish that
+the thirteen checks are complete for exactly-once violations in general, and we
+make no such claim.
+
 The live arm covers sixteen witnesses, two per rule that admits one, rather
 than the whole corpus: three arms at roughly a minute each puts an exhaustive
 run beyond a reasonable budget. The interpreter covers every witness and agrees
@@ -791,7 +844,9 @@ prevalence.
 \section*{Artifact availability}
 
 Code, corpus generator, Docker configuration and every results file are at
-\url{https://github.com/abhisheksharma2411/streamcheck}. An archival DOI is forthcoming. \texttt{make reproduce} runs the pipeline
+\url{https://github.com/abhisheksharma2411/streamcheck}, MIT licensed, at
+release \texttt{v1.0.1}, which is the revision this paper was built from.
+\texttt{make reproduce} runs the pipeline
 from a clean checkout: it starts a Kafka broker, runs every experiment,
 regenerates each figure from the raw results and rebuilds this paper. No number
 in the text is entered by hand; \texttt{scripts/verify\_claims.py} checks each
@@ -810,17 +865,48 @@ M.~Mohammad, ``Analysis of design patterns and benchmark practices in Apache
 Kafka event-streaming systems,'' arXiv:2512.16146, Dec.~2025.
 
 \bibitem{reconstream}
-A.~Sharma, ``When is a reconciliation break real? A temporal correctness
-contract for streaming financial reconciliation,'' manuscript in preparation,
-2026.
+A.~Sharma, ``When Is a Reconciliation Break Real? A Temporal Correctness
+Contract for Streaming Financial Reconciliation,'' arXiv:2610.14470, 2026.
 
-\bibitem{t8}
-A.~Sharma, ``A provider-aware formal contract and conformance suite for payment
-idempotency,'' under review, 2026.
+\bibitem{carbone2015}
+P.~Carbone, G.~F\'ora, S.~Ewen, S.~Haridi, and K.~Tzoumas, ``Lightweight
+asynchronous snapshots for distributed dataflows,'' arXiv:1506.08603, 2015.
 
-\bibitem{t4}
-A.~Sharma, ``Large language models generate retry-safe payment services,''
-under review, 2026.
+\bibitem{wang2021}
+G.~Wang \emph{et al.}, ``Consistency and completeness: Rethinking distributed
+stream processing in Apache Kafka,'' in \emph{Proc. ACM SIGMOD}, 2021,
+pp.~2602--2613. doi:10.1145/3448016.3457556.
+
+\bibitem{idempotencykey}
+J.~Jena, S.~Dalal, and D.~Tishkin, ``The Idempotency-Key HTTP header field,''
+IETF Internet-Draft \texttt{draft-ietf-httpapi-idempotency-key-header}, work
+in progress, 2026.
+
+\bibitem{xu2016}
+T.~Xu, X.~Jin, P.~Huang, Y.~Zhou, S.~Lu, L.~Jin, and S.~Pasupathy, ``Early
+detection of configuration errors to reduce failure damage,'' in \emph{Proc.
+USENIX OSDI}, 2016, pp.~619--634.
+
+\bibitem{chen2020}
+Q.~Chen, T.~Wang, O.~Legunsen, S.~Li, and T.~Xu, ``Understanding and
+discovering software configuration dependencies in cloud and datacenter
+systems,'' in \emph{Proc. ACM ESEC/FSE}, 2020.
+doi:10.1145/3368089.3409727.
+
+\bibitem{sotiropoulos2020}
+T.~Sotiropoulos, D.~Mitropoulos, and D.~Spinellis, ``Practical fault detection
+in Puppet programs,'' in \emph{Proc. ACM/IEEE ICSE}, 2020, pp.~26--37.
+doi:10.1145/3377811.3380384.
+
+\bibitem{beyer2015}
+D.~Beyer, M.~Dangl, D.~Dietsch, M.~Heizmann, and A.~Stahlbauer, ``Witness
+validation and stepwise testification across software verifiers,'' in
+\emph{Proc. ACM ESEC/FSE}, 2015, pp.~721--733. doi:10.1145/2786805.2786867.
+
+\bibitem{alvaro2015}
+P.~Alvaro, J.~Rosen, and J.~M.~Hellerstein, ``Lineage-driven fault
+injection,'' in \emph{Proc. ACM SIGMOD}, 2015, pp.~331--346.
+doi:10.1145/2723372.2723711.
 
 \end{thebibliography}
 

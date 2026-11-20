@@ -135,7 +135,10 @@ def fig_witness() -> None:
     ax.set_xlabel("% of witnesses")
     ax.set_xlim(0, 108)
     ax.set_title("Not every defect is a double charge", fontsize=9)
-    ax.legend(frameon=False, fontsize=6.5, loc="lower right")
+    # Anchored outside the axes: at "lower right" it printed over the
+    # SC103 and SC105 bars.
+    ax.legend(frameon=False, fontsize=6.5, loc="upper center",
+              bbox_to_anchor=(0.5, -0.20), ncol=2)
     fig.savefig(HERE / "fig4_witness.pdf")
     plt.close(fig)
     print("  fig4_witness.pdf")
