@@ -107,7 +107,8 @@ rather than quietly fixed.
 One finding has no fix at the pipeline level. Kafka caps a producer's requested
 transaction timeout at fifteen minutes by default, and surviving a recovery
 assumption longer than about fourteen minutes requires more than that. The
-choice is then between a shorter assumption, a cluster-wide broker change, and giving up the transactional sink. None of the three is a setting in the
+choice is then between a shorter assumption, a cluster-wide broker change,
+and giving up the transactional sink. None of the three is a setting in the
 job.
 
 \section{Background and related work}
@@ -305,7 +306,8 @@ is complaining about.
 The SQL reader is deliberately shallow: it recognises the shapes these
 pipelines are written in and reports what it cannot place, so a fact it fails
 to find becomes a statement about incomplete evidence rather than a silent
-default. Each extracted fact carries its origin, which is what lets a finding cite the files it depends on, and what makes the
+default. Each extracted fact carries its origin, which is what lets a finding
+cite the files it depends on, and what makes the
 measurement in Section~\ref{sec:artifacts} possible.
 
 \subsection{A worked example}
@@ -326,7 +328,8 @@ configured. Raising it does not help, which is the next section.
 \section{The defect with no fix}
 
 Kafka caps a producer's requested transaction timeout at
-\texttt{transaction.max.timeout.ms}. We read the value from a running broker rather than from documentation:
+\texttt{transaction.max.timeout.ms}. We read the value from a running broker
+rather than from documentation:
 apache/kafka 3.9.0 reports 900{,}000\,ms, and its synonym chain marks it
 \texttt{DEFAULT\_CONFIG}. The refusal is measured too, at the boundary. A Java
 producer calling \texttt{initTransactions()} against that broker is granted
@@ -346,7 +349,8 @@ formula of~\eqref{eq:horizon}, and the recovery model in which a job is
 restarted after a bounded outage. A cluster with a raised cap has no such
 threshold, and a drain factor above one lowers it.
 
-This is not a misconfiguration. It is a configuration that does not exist, and the remedies (shorten the recovery assumption, raise the cap cluster-wide,
+This is not a misconfiguration. It is a configuration that does not exist, and
+the remedies (shorten the recovery assumption, raise the cap cluster-wide,
 or drop the transactional sink) are all decisions above the pipeline. We
 report it as a distinct rule (SC106) from the ordinary too-small timeout
 (SC103), because telling a team to raise a number they cannot raise is worse
@@ -510,9 +514,14 @@ to read across the configuration is not a general property of static analysis
 here --- it is what the replay horizon costs.
 
 Figure~\ref{fig:artifacts} puts that in the reviewer's position. The most
-informative single artifact yields 155 of 515 findings, and only 35 of the 305 duration findings, 11.5\% of them. The best pair reaches 185 findings and 65
+informative single artifact yields 155 of 515 findings, and only 35 of the 305
+duration findings, 11.5\% of them. The best pair reaches 185 findings and 65
 duration findings. A reviewer reading the job, or the job and the producer
-properties, sees the structural defects and almost none of the arithmetic.
+properties, sees the structural defects and almost none of the arithmetic. The
+best-triple row of Table~\ref{tab:artifacts} carries the same count as the
+single-artifact bucket of the distribution above, which is a coincidence of two
+different measurements: one is what a chosen view can derive, the other is how
+far apart a finding's evidence lies.
 
 \begin{table}[t]
 \caption{Findings derivable from a restricted view. ``Duration'' is the subset
@@ -547,16 +556,19 @@ money twice are different things.}
 \end{figure}
 
 Of 515 findings, 335 admit a witness (65\%; 70.5\% of the duration findings).
-Every one of the 335 reproduces its predicted observable. Only 245 of them, 73\%, move money twice.
+Every one of the 335 reproduces its predicted observable. Only 245 of them,
+73\%, move money twice.
 
 That gap is a correction to our own rules rather than a property of the
 pipelines. Two rules originally predicted a double charge: an effect placed
 upstream of its deduplication, and a transaction timeout too short to survive
 the downtime. Both produce a second call to the provider, and with a sound key
-still in its lifetime the provider absorbs it. The pipelines are wrong: they have no defence of their own and are correct
+still in its lifetime the provider absorbs it. The pipelines are wrong: they
+have no defence of their own and are correct
 only because the provider is. But they are not double-charging, and reporting
-them as though they were would have been a false alarm on every one. Both were demoted to medium severity and
-their witnesses now predict two invocations and one charge.
+them as though they were would have been a false alarm on every one. Both were
+demoted to medium severity and their witnesses now predict two invocations and
+one charge.
 
 \begin{table}[t]
 \caption{Witness outcomes by rule. ``Reproduced'' is the predicted observable;
