@@ -63,19 +63,19 @@
     "trials_per_case": 200
   },
   "cost_comparison": {
-    "analysis_us_per_pipeline": 3.7022557946675945,
-    "one_trial_ms": 29090.008588371347,
+    "analysis_us_per_pipeline": 3.6984128879368425,
+    "one_trial_ms": 29177.6339453736,
     "rules": {
       "SC001": {
-        "expected_seconds": 29.090008588371347,
+        "expected_seconds": 29.1776339453736,
         "expected_trials": 1.0
       },
       "SC002": {
-        "expected_seconds": 29.090008588371347,
+        "expected_seconds": 29.1776339453736,
         "expected_trials": 1.0
       },
       "SC003": {
-        "expected_seconds": 29.090008588371347,
+        "expected_seconds": 29.1776339453736,
         "expected_trials": 1.0
       },
       "SC006": {
@@ -83,19 +83,19 @@
         "expected_trials": null
       },
       "SC101": {
-        "expected_seconds": 59.651418841499684,
+        "expected_seconds": 59.83110173350703,
         "expected_trials": 2.0505809979494187
       },
       "SC102": {
-        "expected_seconds": 61.13486918747043,
+        "expected_seconds": 61.31902055069758,
         "expected_trials": 2.1015761821366024
       },
       "SC103": {
-        "expected_seconds": 1491.7953122241718,
+        "expected_seconds": 1496.2889202755691,
         "expected_trials": 51.282051282051285
       },
       "SC105": {
-        "expected_seconds": 193.61070607901064,
+        "expected_seconds": 194.19390313060634,
         "expected_trials": 6.655574043261232
       }
     },
@@ -184,9 +184,9 @@
     }
   },
   "provenance": {
-    "git": "ce9f31992a4e523ebac03868374a4e4dff2b743e",
+    "git": "784e60a669d6af12662f6ade61561e0adcdeb584",
     "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-11-20T23:33:44Z"
+    "utc": "2026-11-21T00:07:35Z"
   }
 }

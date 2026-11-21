@@ -139,6 +139,20 @@ def build_claims() -> list[tuple[str, object, object]]:
                   sum(1 for r in e3["runs"] if r["gap_exceeds_ttl"])))
         attributable_rules = sorted({r["rule"] for r in e3["runs"] if r["attributable"]})
         c.append(("attributable rules", ["SC101", "SC102", "SC105"], attributable_rules))
+        # Table VI prints a gap range per rule. Most of that range is the two
+        # witnesses' different configured downtimes, which the caption now
+        # says; what is left over is wall-clock jitter across the three arms
+        # of one witness. Assert the property the caption claims rather than
+        # a measured duration, which moves between machines.
+        spreads = []
+        for key in {(r["rule"], r["case_id"]) for r in e3["runs"]}:
+            vals = [r[arm]["observed_gap_ms"] / 1000.0
+                    for r in e3["runs"]
+                    if (r["rule"], r["case_id"]) == key
+                    for arm in ("defective", "control", "sufficient")]
+            spreads.append(max(vals) - min(vals))
+        c.append(("within one witness the gap moves by under a second",
+                  True, max(spreads) < 1.0))
     if e9:
         h = e9["headline"]
         c.append(("example checkpoint interval, seconds", 60,

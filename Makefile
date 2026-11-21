@@ -48,7 +48,10 @@ experiments: fast up ## every experiment, including the ones needing a broker
 # results. Re-running it here makes the artifact deterministic and measured.
 	$(PY) experiments/e5_random.py
 
-figures: ## regenerate every figure from results/
+tables: ## regenerate the generated table rows from results/
+	$(PY) scripts/make_live_table.py
+
+figures: tables ## regenerate every figure and table from results/
 	$(PY) figures/make_figures.py
 
 paper: figures ## build the PDF
@@ -61,6 +64,7 @@ arxiv: paper ## build and verify the self-contained arXiv package
 	$(PY) scripts/make_arxiv.py
 
 verify: ## check every number in the paper against results/
+	$(PY) scripts/make_live_table.py --check
 	$(PY) scripts/verify_claims.py
 	$(PY) scripts/check_provenance.py
 	$(PY) scripts/check_prose_numbers.py
