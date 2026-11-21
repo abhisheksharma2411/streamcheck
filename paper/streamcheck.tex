@@ -29,19 +29,20 @@ The second is not written anywhere. It is assembled from a checkpoint interval
 in one file, a recovery assumption in a runbook, a restart delay in a third
 and a source's lateness bound in a fourth. Each file is defensible alone; the
 fault is in the relation between them. We give a checker that gathers those
-facts and states the relations, and a synthesiser that turns each finding into
-a runnable scenario: these records, kill the job here, bring it back after
-this long, and the provider will show two charges for one order. The central
+facts and states the relations, and a synthesiser that turns 335 of the 515
+findings into a runnable scenario: these records, kill the job here, bring it
+back after this long, and this is the observable. 245 of them produce two
+charges. The central
 measurement is how far apart the evidence lies. Across a corpus of 630
-pipelines we generated, 210 of 515 findings cannot be derived from fewer than
+pipelines we generated, 210 of them cannot be derived from fewer than
 three artifacts, and no single artifact yields more than 35 of the 305
 duration findings. Executing the witnesses corrected our own rules: two were
 demoted after their scenarios produced a repeated call the provider's
 idempotency absorbed rather than a second charge. All 16 selected live
 witnesses reproduced their predicted observable against a real Kafka broker
 with a real process kill, and a matched control in which the provider never
-forgets the key did not, which makes the second charge attributable to the key
-lifetime and not the replay. Fault injection finds the same defects only if
+forgets the key did not, attributing the second charge to the key lifetime,
+not the replay. Fault injection finds the same defects only if
 the tester already assumed a long enough outage: one willing to simulate five
 minutes finds 15\% of them, and 12 hours is needed for all. A sweep also
 locates a configuration with no application-level fix, where above a 14-minute
@@ -90,10 +91,12 @@ structural defects a careful reviewer could find and duration defects that
 require the arithmetic.
 
 \textbf{Witnesses.} A static finding about a payment pipeline is easy to dismiss, so
-each becomes a runnable scenario with a predicted observable. Running them
+335 of the 515 become a runnable scenario with a predicted observable --- the
+rest describe a condition a single-record scenario cannot exhibit. Running them
 against a real Kafka broker, with the pipeline process really killed and a stub
-provider that really expires keys, either produces the second charge or does
-not.
+provider that really expires keys, either produces the predicted observable or
+does not. For 245 of the 335 that observable is a second charge; for the
+others it is a repeated call the provider's idempotency absorbs.
 Every run is paired with a control in which the provider never forgets, so the
 second charge is attributable to the key lifetime rather than to the replay.
 
@@ -221,10 +224,14 @@ resumes from its last checkpoint, so everything processed since is replayed;
 while it was down the input accumulated, and draining that backlog takes time
 proportional to the outage. Records still in flight when the job died arrive
 within their source's bound. Putting those together,
+% Broken across two lines rather than respaced: on one line it overflows the
+% 252pt column by 2.61pt. The equation is unchanged.
 \begin{equation}
-H = \mathrm{cp} + \mathrm{pause} + \mathrm{down} + \mathrm{restart}
-    + \delta(\mathrm{down} + \mathrm{restart}) + \max_s \Lambda_s ,
 \label{eq:horizon}
+\begin{split}
+H = {} & \mathrm{cp} + \mathrm{pause} + \mathrm{down} + \mathrm{restart} \\
+       & {} + \delta(\mathrm{down} + \mathrm{restart}) + \max_s \Lambda_s ,
+\end{split}
 \end{equation}
 where $\delta$ is the drain factor, one by default. $H$ is the age a record can
 have reached when it is processed for the second time.
@@ -843,6 +850,11 @@ The configuration sweep uses menus we assembled from values practitioners
 report. It supports a statement about where the threshold lies, not about how
 common the defect is in deployed systems, and we have no field data.
 
+% \balance has to be issued in the first column of the final page; after
+% \end{thebibliography} it lands in the second and the package warns that the
+% columns might not be balanced. The conclusion opens the last page's first
+% column, so it goes here.
+\balance
 \section{Conclusion}
 
 The question of whether a restart charges a customer twice has an answer, and
@@ -862,8 +874,10 @@ prevalence.
 
 Code, corpus generator, Docker configuration and every results file are at
 \url{https://github.com/abhisheksharma2411/streamcheck}, MIT licensed, at
-release \texttt{v1.0.1}, which is the revision this paper was built from. The
-release is archived at DOI \mbox{\texttt{10.5281/zenodo.24412123}}.
+release \texttt{v1.0.2}, which is the revision this paper was built from.
+Releases are archived at Zenodo under the concept DOI
+\mbox{\texttt{10.5281/zenodo.24412123}}, which resolves to the most recent
+archived version.
 \texttt{make reproduce} runs the pipeline
 from a clean checkout: it starts a Kafka broker, runs every experiment,
 regenerates each figure from the raw results and rebuilds this paper. No number
@@ -928,5 +942,4 @@ doi:10.1145/2723372.2723711.
 
 \end{thebibliography}
 
-\balance
 \end{document}

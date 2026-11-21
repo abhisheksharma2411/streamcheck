@@ -2,7 +2,8 @@
 
 **Whether a restart charges your customer twice is arithmetic between numbers
 in four different files.** StreamCheck gathers those numbers, states the
-relations, and turns each finding into a scenario you can run.
+relations, and turns 335 of its 515 findings into a scenario you can run ---
+245 of which end in a second charge.
 
 A payment pipeline dies at lunchtime and someone restarts it at two. It
 reprocesses everything since its last checkpoint. Some customers are charged
@@ -77,10 +78,20 @@ combination is not.
 ## Reproducing
 
 ```bash
-make reproduce     # broker up, E1-E9, figures, paper, tests, claim check
+make preflight     # check every tool the run needs, before anything is deleted
+make reproduce     # preflight, broker up, E1-E9, figures, paper, tests, checks
 make fast          # everything that does not need a broker
 make verify        # check every number in the paper against results/
 ```
+
+`make reproduce` takes **about 25 minutes**, most of it E3's 48 live executions
+that really kill a process and wait for the consumer group to evict it. It runs
+`preflight` *before* deleting anything, so a missing tool costs you nothing.
+
+You do **not** need a JDK. The broker-refusal probe compiles and runs inside a
+pinned `eclipse-temurin:21.0.5_11-jdk` image --- the same build the broker image
+itself runs --- against client jars copied out of the broker. What you need is
+Docker with Compose v2, Python 3.11+, and a TeX distribution.
 
 ## Layout
 
@@ -104,9 +115,12 @@ We wrote both the mutations and the checks, so the headline recall number
 measures implementation correctness, not detection power — the boundary cases
 and the live execution are what carry evidence. The execution arm uses a real
 broker and a real SIGKILL but a purpose-built consumer rather than Flink.
-Single partition throughout. The broker cap is measured; the *refusal* is
-documented behaviour we did not reproduce. See `ASSUMPTIONS.md` and the paper's
-Limitations section.
+Single partition throughout. Both halves of the broker cap are measured on one
+broker: its configured value, 900,000 ms, and its refusal of 900,001 ms with
+`The transaction timeout is larger than the maximum value allowed by the
+broker`. The provider in the live arm is a local HTTP stub implementing an
+idempotency key with an expiry, not a commercial payment provider; no money
+moves. See `ASSUMPTIONS.md` and the paper's Limitations section.
 
 ## Licence
 

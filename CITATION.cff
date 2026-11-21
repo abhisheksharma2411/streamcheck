@@ -6,17 +6,30 @@ abstract: >-
   client properties, its job definition, an operational runbook and a
   declaration of a payment provider's idempotency contract, derives the replay
   horizon from them, and reports the structural and duration defects that break
-  exactly-once. Each finding is turned into an executable scenario whose
-  observable is money moving twice, validated against a real Kafka broker.
+  exactly-once. Of 515 findings, 335 are turned into executable scenarios that
+  reproduce their predicted observable; 245 of those move money twice, and the
+  rest reproduce a repeated call the provider's idempotency absorbs. Sixteen
+  selected scenarios were replayed against a real Kafka broker.
 type: software
 authors:
   - family-names: Sharma
     given-names: Abhishek
     email: abhicse24@gmail.com
     orcid: "https://orcid.org/0009-0007-1103-2103"
-version: 1.0.1
+version: 1.0.2
 date-released: 2026-11-21
+# The Zenodo *concept* DOI: it resolves to the most recent archived version
+# rather than to one of them. Each release also gets its own version DOI
+# (v1.0.1 is 10.5281/zenodo.24412124); cite the concept DOI unless you mean a
+# specific version.
 doi: 10.5281/zenodo.24412123
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24412123
+    description: "Zenodo concept DOI -- resolves to the latest archived version"
+  - type: doi
+    value: 10.5281/zenodo.24412124
+    description: "Zenodo version DOI for release v1.0.1"
 license: MIT
 repository-code: "https://github.com/abhisheksharma2411/streamcheck"
 keywords:

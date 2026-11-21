@@ -53,7 +53,7 @@ def main(doi: str) -> int:
     elif ESCAPED in text or PLAIN in text:
         PAPER.write_text(text.replace(ESCAPED, doi.replace("_", r"\_")).replace(PLAIN, doi))
         changed.append(PAPER.name)
-    elif "archived at DOI" in text:
+    elif re.search(r"\\mbox\{\\texttt\{10\.\d{4,9}/", text):
         # Already inserted. Appending after the anchor a second time is how
         # this script shipped a paragraph carrying the same sentence twice
         # in a test; running it again must be a no-op, not an append.
@@ -88,7 +88,9 @@ def main(doi: str) -> int:
     print("updated:", ", ".join(changed) or "nothing")
     if missed:
         print("not updated:", ", ".join(missed))
-    if PAPER.name in [m.split()[0] for m in missed] and "archived at DOI" not in PAPER.read_text():
+    if (PAPER.name in [m.split()[0] for m in missed]
+            and not re.search(r"\\mbox\{\\texttt\{10\.\d{4,9}/",
+                              PAPER.read_text())):
         print("ERROR: the paper still has no DOI. Check the placeholder spelling.")
         return 1
     return 0

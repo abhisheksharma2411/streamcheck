@@ -11,8 +11,11 @@ and duration inequalities whose terms live in separate artifacts, and no tool
 checks the conjunction.** Concretely: a checker that gathers facts from an
 engine config, client properties, job SQL, a runbook and a declaration of the
 provider's idempotency contract, derives a *replay horizon* from them, states
-the defect classes as relations against it, and turns each finding into an
-executable scenario whose observable is money moving twice.
+the defect classes as relations against it, and turns 335 of its 515 findings
+into an executable scenario with a predicted observable. For 245 of those the
+observable is money moving twice; the remainder predict a repeated call the
+provider's idempotency absorbs, which is a different thing and is reported as
+one.
 
 The measured form of the claim is the one in Section 8.2 of the paper: 210 of
 515 findings cannot be derived from fewer than three artifacts, and no single

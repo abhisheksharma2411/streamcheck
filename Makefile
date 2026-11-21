@@ -6,7 +6,7 @@
 PY  ?= ./.venv/bin/python
 PIP ?= ./.venv/bin/pip
 
-.PHONY: help setup up down experiments fast figures paper test verify reproduce clean distclean
+.PHONY: help preflight setup up down experiments fast figures tables paper test arxiv verify reproduce clean distclean
 
 help:
 	@grep -E '^[a-z-]+:.*?##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | column -t -s "$$(printf '\t')"
@@ -21,7 +21,8 @@ setup: .venv ## create the virtualenv
 up: ## start the Kafka broker used by the execution arm
 	docker compose up -d
 	@for i in $$(seq 1 60); do \
-	  docker exec streamcheck-broker /opt/kafka/bin/kafka-topics.sh \
+	  docker exec "$$(docker compose ps -q broker)" \
+	    /opt/kafka/bin/kafka-topics.sh \
 	    --bootstrap-server localhost:9092 --list >/dev/null 2>&1 && break; \
 	  sleep 1; \
 	done
@@ -69,7 +70,16 @@ verify: ## check every number in the paper against results/
 	$(PY) scripts/check_provenance.py
 	$(PY) scripts/check_prose_numbers.py
 
-reproduce: distclean setup up experiments figures paper test verify ## clean-room end to end
+preflight: ## check every tool the reproduction needs, before anything is deleted
+	python3 scripts/preflight.py
+
+# `preflight` comes first and `distclean` second, on purpose. This target used
+# to lead with distclean, so a reader missing Docker or a TeX distribution lost
+# every committed result file and found out twenty minutes later.
+#
+# Budget about 25 minutes. Most of it is E3: 48 live executions that really
+# kill a process and wait for the consumer group to evict it.
+reproduce: preflight distclean setup up experiments figures paper test verify ## clean-room end to end (~25 min)
 	@echo
 	@echo "reproduction complete -- results/ figures/ paper/streamcheck.pdf"
 

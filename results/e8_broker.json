@@ -5,10 +5,10 @@
   "largest_accepted_ms": 900000,
   "matches_constant": true,
   "provenance": {
-    "git": "784e60a669d6af12662f6ade61561e0adcdeb584",
+    "git": "6b99cf3021270d20403caac0fd8cb96406c7f503-dirty",
     "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
     "python": "3.14.7",
-    "utc": "2026-11-20T23:44:14Z"
+    "utc": "2026-11-21T06:43:19Z"
   },
   "refusal_is_measured": true,
   "rejection_probe": {
@@ -35,7 +35,8 @@
         "requested_ms": 900001
       }
     ],
-    "completed": true
+    "completed": true,
+    "jdk": "eclipse-temurin:21.0.5_11-jdk"
   },
   "related_settings": {
     "transaction.remove.expired.transaction.cleanup.interval.ms": "3600000",

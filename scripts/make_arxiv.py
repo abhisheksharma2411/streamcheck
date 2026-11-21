@@ -108,14 +108,18 @@ def _artifact_doi(tex: str) -> str:
     DOI minted after the manuscript was written is exactly the thing that gets
     added in one place and forgotten in the other.
     """
-    m = re.search(r"archived at DOI\s*\\mbox\{\\texttt\{([^}]+)\}\}", tex)
+    # Anchored on the DOI's own shape, not on the sentence around it. The
+    # first version keyed on the words "archived at DOI"; rewording that
+    # sentence to name the *concept* DOI silently emptied this, and the
+    # arXiv Comments quietly lost the DOI with nothing failing.
+    m = re.search(r"\\mbox\{\\texttt\{(10\.\d{4,9}/[^}]+)\}\}", tex)
     return m.group(1).replace(r"\_", "_") if m else ""
 
 
 def _metadata(tex: str, pdf: Path, tag: str) -> str:
     c = _counts(tex, pdf)
     doi = _artifact_doi(tex)
-    archived = f" Archived at DOI {doi}." if doi else ""
+    archived = f" Archived at Zenodo concept DOI {doi}." if doi else ""
     comments = (
         f"{c['pages']} pages, {c['figures']} figures, {c['tables']} tables. "
         f"Checker, corpus generator, Docker configuration and every raw "

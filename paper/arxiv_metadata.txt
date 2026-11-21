@@ -11,7 +11,7 @@ CROSS-LIST
 cs.DC
 
 COMMENTS
-8 pages, 4 figures, 7 tables. Checker, corpus generator, Docker configuration and every raw results file are at https://github.com/abhisheksharma2411/streamcheck (release v1.0.1); `make reproduce` rebuilds every figure, table and number in the paper from the raw results. Archived at DOI 10.5281/zenodo.24412123.
+8 pages, 4 figures, 7 tables. Checker, corpus generator, Docker configuration and every raw results file are at https://github.com/abhisheksharma2411/streamcheck (release v1.0.2); `make reproduce` rebuilds every figure, table and number in the paper from the raw results. Archived at Zenodo concept DOI 10.5281/zenodo.24412123.
 
 REPORT NUMBER
 (leave blank -- no institutional report series)

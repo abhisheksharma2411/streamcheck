@@ -30,8 +30,53 @@ from _common import ROOT, write
 from streamcheck.ir import BROKER_MAX_TXN_TIMEOUT_DEFAULT
 from streamcheck.live import broker_available
 
-CONTAINER = "streamcheck-broker"
+#: The JDK the probe is compiled and run in. Pinned to the exact build the
+#: broker image itself runs (Temurin 21.0.5+11), so the probe is not merely
+#: "some Java" but the same runtime talking to the same client jars.
+#:
+#: This used to use whatever `javac` was on the author's PATH. Two things were
+#: wrong with that. macOS ships a /usr/bin/javac stub that exists and fails, so
+#: shutil.which() said yes and the compile blew up; and a reader with a
+#: different JDK was running a different experiment from the one the paper
+#: reports. Neither is visible in the results file.
+JDK_IMAGE = "eclipse-temurin:21.0.5_11-jdk"
 PROBE = ROOT / "probe" / "TxnTimeoutProbe.java"
+
+
+class ProbeError(RuntimeError):
+    """The refusal could not be measured.
+
+    Raised rather than recorded. The paper states that the refusal one
+    millisecond past the cap was observed on a real broker; a run that could
+    not observe it must not leave behind a results file that says ``ok``.
+    """
+
+
+def container() -> str:
+    """The broker container id, resolved through compose rather than by name.
+
+    The compose file used to pin ``container_name: streamcheck-broker``, which
+    is a global name on the Docker daemon: a second checkout, or anyone else's
+    container of that name, collides and the error points at the wrong thing.
+    Compose already labels its own containers, so ask it.
+    """
+    out = subprocess.run(["docker", "compose", "ps", "-q", "broker"],
+                         cwd=ROOT, capture_output=True, text=True)
+    cid = out.stdout.strip().splitlines()
+    if not cid:
+        raise ProbeError(
+            "no broker container: `docker compose ps -q broker` returned "
+            f"nothing (stderr: {out.stderr.strip()[:200]}). Run `make up`.")
+    return cid[0]
+
+
+def network() -> str:
+    """The compose network the broker is on, so the probe can reach it."""
+    out = subprocess.run(
+        ["docker", "inspect", container(), "--format",
+         "{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}"],
+        capture_output=True, text=True, check=True)
+    return out.stdout.strip()
 #: Below the cap, exactly at it, and one millisecond past. The middle value is
 #: what makes the third a boundary rather than just a large number.
 PROBE_REQUESTS = (60_000, BROKER_MAX_TXN_TIMEOUT_DEFAULT,
@@ -42,7 +87,7 @@ def broker_setting(name: str) -> tuple[str | None, str]:
     """Read one broker config, returning the value and where it came from."""
     try:
         out = subprocess.run(
-            ["docker", "exec", CONTAINER, "/opt/kafka/bin/kafka-configs.sh",
+            ["docker", "exec", container(), "/opt/kafka/bin/kafka-configs.sh",
              "--bootstrap-server", "localhost:9092", "--entity-type", "brokers",
              "--entity-name", "1", "--describe", "--all"],
             capture_output=True, text=True, timeout=60,
@@ -58,54 +103,72 @@ def broker_setting(name: str) -> tuple[str | None, str]:
 def run_probe() -> dict:
     """Compile the Java probe and ask the broker for each timeout in turn.
 
-    The client jars come out of the broker image, so the probe is built against
-    exactly the version under test and the experiment pulls in no new
-    dependency. A missing JDK is reported rather than silently skipped: the
-    paper says the refusal was measured, and a run that could not measure it
-    has to say so.
+    The client jars come out of the broker image and the compiler out of a
+    pinned JDK image, so the probe is built against exactly the version under
+    test and there is no host JDK to get wrong. Every failure raises
+    ProbeError carrying the compiler or runtime output: the paper says the
+    refusal was measured, and a run that could not measure it must fail
+    loudly rather than leave a results file behind that says otherwise.
     """
-    javac = shutil.which("javac")
-    java = shutil.which("java")
-    if not (javac and java and PROBE.exists()):
-        return {"completed": False,
-                "reason": "no JDK on PATH, or probe/TxnTimeoutProbe.java missing"}
-
     work = Path(tempfile.mkdtemp(prefix="streamcheck-probe-"))
     try:
-        libs = work / "libs"
-        subprocess.run(["docker", "cp", f"{CONTAINER}:/opt/kafka/libs", str(libs)],
-                       capture_output=True, check=True, timeout=180)
-        classes = work / "classes"
-        subprocess.run([javac, "-cp", f"{libs}/*", "-d", str(classes), str(PROBE)],
-                       capture_output=True, text=True, check=True, timeout=180)
+        if not PROBE.exists():
+            raise ProbeError(f"{PROBE} is missing")
+        shutil.copy(PROBE, work / PROBE.name)
 
+        libs = work / "libs"
+        cp = subprocess.run(["docker", "cp", f"{container()}:/opt/kafka/libs",
+                             str(libs)], capture_output=True, text=True,
+                            timeout=300)
+        if cp.returncode != 0:
+            raise ProbeError("could not copy the client jars out of the broker "
+                             f"image: {cp.stderr.strip()[:400]}")
+
+        in_jdk = ["docker", "run", "--rm", "-v", f"{work}:/w", "-w", "/w"]
+        compile_ = subprocess.run(
+            in_jdk + [JDK_IMAGE, "javac", "-cp", "libs/*", "-d", "classes",
+                      PROBE.name],
+            capture_output=True, text=True, timeout=600)
+        if compile_.returncode != 0:
+            raise ProbeError(
+                f"the probe did not compile under {JDK_IMAGE}.\n"
+                f"javac exit {compile_.returncode}\n"
+                f"{(compile_.stderr or compile_.stdout).strip()[:1200]}")
+
+        net = network()
         attempts = []
         for ms in PROBE_REQUESTS:
             out = subprocess.run(
-                [java, "-cp", f"{classes}:{libs}/*", "TxnTimeoutProbe",
-                 "localhost:19092", str(ms), f"streamcheck-probe-{ms}"],
-                capture_output=True, text=True, timeout=120)
-            line = next((l for l in out.stdout.splitlines() if l.startswith("{")), "")
+                in_jdk[:2] + ["--network", net] + in_jdk[2:] +
+                [JDK_IMAGE, "java", "-cp", "classes:libs/*", "TxnTimeoutProbe",
+                 "broker:9092", str(ms), f"streamcheck-probe-{ms}"],
+                capture_output=True, text=True, timeout=300)
+            line = next((l for l in out.stdout.splitlines()
+                         if l.startswith("{")), "")
             if not line:
-                return {"completed": False,
-                        "reason": f"probe produced no result for {ms}ms",
-                        "stderr": out.stderr[-400:]}
+                raise ProbeError(
+                    f"the probe produced no result for {ms} ms.\n"
+                    f"java exit {out.returncode}\n"
+                    f"stdout: {out.stdout.strip()[:400]}\n"
+                    f"stderr: {out.stderr.strip()[:800]}")
             row = json.loads(line)
             row["requested_ms"] = int(row["requested_ms"])
             row["refused"] = row["refused"] == "true"
             attempts.append(row)
-        return {"completed": True, "attempts": attempts}
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        return {"completed": False, "reason": f"{type(exc).__name__}: {exc}"}
+        return {"completed": True, "jdk": JDK_IMAGE, "attempts": attempts}
+    except subprocess.TimeoutExpired as exc:
+        raise ProbeError(f"timed out: {exc}") from exc
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
 
 def main() -> None:
     if not broker_available():
-        write("e8_broker.json", {"status": "skipped",
-                                 "reason": "no broker reachable"})
-        return
+        raise ProbeError(
+            "no broker reachable on localhost:19092. E8 used to write "
+            '"status": "skipped" here and exit 0, which let a clean-room run '
+            "finish with the broker results missing and nothing saying so. "
+            "Run `make up` first.")
 
     value, synonyms = broker_setting("transaction.max.timeout.ms")
     measured = int(value) if value else None
@@ -114,14 +177,22 @@ def main() -> None:
         for name in ("transaction.state.log.min.isr",
                      "transaction.remove.expired.transaction.cleanup.interval.ms")
     }
-    probe = run_probe()
-    attempts = probe.get("attempts", [])
+    probe = run_probe()  # raises ProbeError rather than returning a failure
+    attempts = probe["attempts"]
     accepted = [a["requested_ms"] for a in attempts if not a["refused"]]
     refused = [a["requested_ms"] for a in attempts if a["refused"]]
     largest_accepted = max(accepted) if accepted else None
     smallest_refused = min(refused) if refused else None
     refused_above_cap = (
         largest_accepted == measured and smallest_refused == measured + 1)
+
+    if not refused_above_cap:
+        raise ProbeError(
+            "the probe ran but did not bracket the cap: largest accepted "
+            f"{largest_accepted} ms, smallest refused {smallest_refused} ms, "
+            f"broker cap {measured} ms. The paper reports the refusal one "
+            "millisecond past the cap, so this is a failed measurement, not a "
+            "result to record.")
 
     write("e8_broker.json", {
         "status": "ok",

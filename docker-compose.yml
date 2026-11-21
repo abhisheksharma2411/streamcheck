@@ -7,7 +7,11 @@
 services:
   broker:
     image: apache/kafka:3.9.0
-    container_name: streamcheck-broker
+    # Deliberately no container_name. That field claims a global name on the
+    # Docker daemon, so a second checkout of this repo -- or anyone else's
+    # container of that name -- collides, and compose fails with an error that
+    # points at the wrong thing. The experiments resolve the container through
+    # `docker compose ps -q broker` instead, which is scoped to this project.
     ports:
       - "19092:19092"
     environment:
