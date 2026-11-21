@@ -99,14 +99,29 @@ def _tag_exists(tag: str) -> str:
     return ""
 
 
+def _artifact_doi(tex: str) -> str:
+    """The archive DOI, read from the paper so the two cannot disagree.
+
+    arXiv's own DOI field is for a journal DOI of this paper. A software DOI
+    put there asserts a published version that does not exist, so the archive
+    DOI goes in Comments instead -- and it goes there automatically, because a
+    DOI minted after the manuscript was written is exactly the thing that gets
+    added in one place and forgotten in the other.
+    """
+    m = re.search(r"archived at DOI\s*\\mbox\{\\texttt\{([^}]+)\}\}", tex)
+    return m.group(1).replace(r"\_", "_") if m else ""
+
+
 def _metadata(tex: str, pdf: Path, tag: str) -> str:
     c = _counts(tex, pdf)
+    doi = _artifact_doi(tex)
+    archived = f" Archived at DOI {doi}." if doi else ""
     comments = (
         f"{c['pages']} pages, {c['figures']} figures, {c['tables']} tables. "
         f"Checker, corpus generator, Docker configuration and every raw "
         f"results file are at {REPO_URL} (release {tag}); `make reproduce` "
         f"rebuilds every figure, table and number in the paper from the raw "
-        f"results."
+        f"results.{archived}"
     )
     return f"""TITLE
 {TITLE}
