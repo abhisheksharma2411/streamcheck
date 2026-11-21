@@ -53,11 +53,18 @@ on that assumption and measured as a sweep over the tester's assumed worst
 case, which is where the real gap is: 15% found at a five-minute ceiling,
 100% at twelve hours.
 
-**A SQL precision limit and a missing client feature.** `INTERVAL 'n' SECOND`
-caps at 99 in Flink SQL (inherited from P5's harness). The Python Kafka client
-available does not implement transactions, so the planned rejection probe for
-the broker cap could not be run; the cap's *value* is measured from a running
-broker and the refusal is left as documented behaviour.
+**A SQL precision limit, and a client that could not do the job.**
+`INTERVAL 'n' SECOND` caps at 99 in Flink SQL (inherited from the
+reconciliation harness). The Python Kafka client available does not implement
+transactions, which blocked the rejection probe for a while --- for one draft
+the cap's *value* was measured and its refusal left as documented behaviour.
+
+That is closed. The probe is a small Java program (`probe/TxnTimeoutProbe.java`)
+compiled and run inside a pinned `eclipse-temurin:21.0.5_11-jdk` image against
+client jars copied out of the broker image, so it needs no host JDK and no new
+Python dependency. Both halves of the cap are now measured on one broker:
+900,000 ms accepted, 900,001 ms refused with `The transaction timeout is larger
+than the maximum value allowed by the broker`.
 
 ## The experiments
 
@@ -70,7 +77,8 @@ broker and the refusal is left as documented behaviour.
 | E5 | What would fault-injection testing cost? | `e5_random.json` |
 | E6 | Does compressing a witness change its verdict? | `e6_scale.json` |
 | E7 | How much of the plausible configuration space is affected? | `e7_prevalence.json` |
-| E8 | The broker's transaction-timeout cap, measured | `e8_broker.json` |
+| E8 | The broker's transaction-timeout cap and its refusal, both measured | `e8_broker.json` |
+| E9 | The worked example, end to end from its artifacts | `e9_example.json` |
 
 ## Protocol
 
@@ -92,4 +100,13 @@ when the control does not reproduce it.
   the tester's assumed worst case is the real result.
 - The corpus's headline recall number is **not** evidence of detection power
   and is labelled as such everywhere it appears.
-- The broker-cap *refusal* was **not** reproduced, only the cap's value.
+- ~~The broker-cap *refusal* was not reproduced, only the cap's value.~~
+  **Closed.** Both halves are measured; see above. Listed struck through rather
+  than deleted, because the thing that made it true for a while --- no
+  transactional client in Python --- is worth knowing about.
+- The live arm's provider is a local HTTP stub with a key expiry, not a
+  commercial provider. The live results are evidence about the defect families
+  under a provider that behaves as documented.
+- Of 515 findings, 335 admit a witness and 245 of those move money twice. The
+  remainder reproduce a repeated call the provider absorbs. Witness coverage
+  is not universal and the documentation no longer implies it is.
