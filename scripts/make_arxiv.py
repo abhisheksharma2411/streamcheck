@@ -77,6 +77,28 @@ def _release_tag() -> str:
     return tag
 
 
+def _tag_exists(tag: str) -> str:
+    """Whether the release the paper points a reader at actually exists.
+
+    A warning rather than an error: the tag is cut after the manuscript is
+    final, so the build has to work before it exists. But the artifact
+    statement is a promise to a reader, and shipping it unkept is the kind of
+    thing nothing else here would notice.
+    """
+    try:
+        out = subprocess.run(["git", "tag", "--list", tag], cwd=ROOT,
+                             capture_output=True, text=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return "could not read git tags"
+    if out.stdout.strip() != tag:
+        return f"{tag} does not exist yet -- the paper points readers at it"
+    remote = subprocess.run(["git", "ls-remote", "--tags", "origin", tag],
+                            cwd=ROOT, capture_output=True, text=True)
+    if remote.returncode != 0 or tag not in remote.stdout:
+        return f"{tag} is local only -- not pushed, so no reader can fetch it"
+    return ""
+
+
 def _metadata(tex: str, pdf: Path, tag: str) -> str:
     c = _counts(tex, pdf)
     comments = (
@@ -171,6 +193,9 @@ def main() -> int:
     print(f"  standalone  {"OK" if ok else "FAILED"}, {detail}")
     print(f"  abstract    {len(abstract)} chars (arXiv limit 1920)")
     print(f"  metadata    paper/arxiv_metadata.txt (release {tag})")
+    warning = _tag_exists(tag)
+    if warning:
+        print(f"  RELEASE     {warning}")
     nonascii = sorted({c for c in abstract if ord(c) > 127})
     print(f"  abstract ascii-only: {not nonascii}"
           + (f" -- offending: {nonascii}" if nonascii else ""))
